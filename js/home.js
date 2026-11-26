@@ -251,8 +251,6 @@
       map = new window.ymaps.Map(container, { center: [59.27, 30.81], zoom: 7, controls: [] }, { suppressMapOpenBlock: true });
       map.controls.add('zoomControl', { size: 'small' });
       map.controls.add('geolocationControl');
-      // Колесо мыши листает страницу, а не карту: иначе прокрутка застревает на секции.
-      map.behaviors.disable('scrollZoom');
       STORES.forEach((store) => {
         map.geoObjects.add(new window.ymaps.Placemark(store.coords,
           { balloonContentHeader: store.title, balloonContentBody: store.address, hintContent: store.address },
