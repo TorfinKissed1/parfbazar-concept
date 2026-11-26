@@ -56,7 +56,7 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: calc(var(--header-height) + var(--space-l));
+  scroll-padding-top: calc(var(--header-height) + var(--header-search-height, 0px) + var(--space-l));
   scrollbar-width: none;
   -webkit-text-size-adjust: 100%;
 }
@@ -167,6 +167,10 @@ input[type="search"]::-webkit-search-cancel-button {
   animation-timing-function: var(--ease-out);
 }
 
+[hidden] {
+  display: none !important;
+}
+
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -213,6 +217,7 @@ input[type="search"]::-webkit-search-cancel-button {
   letter-spacing: 0.005em;
   text-transform: uppercase;
   text-wrap: balance;
+  overflow-wrap: anywhere;
 }
 
 .title--size_hero {
@@ -270,6 +275,13 @@ input[type="search"]::-webkit-search-cancel-button {
   stroke-width: 1.5;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+.sprite {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
 }
 
 .icon--size_s {
@@ -508,7 +520,13 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 
 .check__link {
-  border-bottom: 1px solid currentColor;
+  color: var(--color-ink);
+}
+
+@media (hover: hover) {
+  .check:hover .check__box {
+    border-color: var(--color-ink);
+  }
 }
 
 /* Появление блоков при прокрутке: класс reveal ставит скрипт, без него всё видно сразу. */
@@ -526,6 +544,13 @@ input[type="search"]::-webkit-search-cancel-button {
 }
 
 /* Ссылка «смотреть все»: на компьютере в заголовке секции, на телефоне кнопкой под ней. */
+
+.section__tools {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--space-l);
+}
 
 .section__more {
   flex-shrink: 0;

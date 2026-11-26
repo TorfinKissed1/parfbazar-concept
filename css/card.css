@@ -19,8 +19,10 @@
 .card {
   position: relative;
   display: flex;
+  flex: 1 1 auto;
   flex-direction: column;
   min-width: 0;
+  container-type: inline-size;
 }
 
 .card__media {
@@ -91,10 +93,27 @@
 
 .card__buy {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
   gap: var(--space-s);
+}
+
+.card__price {
+  flex-direction: column-reverse;
+  align-items: flex-end;
+}
+
+/* В узкой карточке объём и цена не помещаются в строку: цена встаёт над кнопками объёма. */
+@container (max-width: 215px) {
+  .card__buy {
+    flex-direction: column-reverse;
+    align-items: flex-start;
+  }
+
+  .card__price {
+    flex-direction: row;
+    align-items: baseline;
+  }
 }
 
 @media (hover: hover) {
@@ -162,9 +181,9 @@
 }
 
 .volumes__option {
-  min-width: 56px;
+  min-width: 50px;
   min-height: 36px;
-  padding: 0 10px;
+  padding: 0 8px;
   border: 1px solid var(--color-line);
   border-radius: var(--radius-s);
   font-size: var(--fs-small);
@@ -217,6 +236,10 @@
   margin-inline: calc(-1 * var(--gutter));
   padding-inline: var(--gutter);
   overflow-x: auto;
+  /* Запас сверху и снизу: лента обрезает содержимое по вертикали, без него срезалось бы кольцо фокуса. */
+  margin-block: -6px;
+  padding-block: 6px;
+  overflow-y: hidden;
   scroll-padding-inline: var(--gutter);
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
@@ -226,9 +249,23 @@
   display: none;
 }
 
+/* В ленте хитов метка «Хит» стояла бы на каждой карточке и ничего не выделяла. */
+.rail--plain .card__badge {
+  display: none;
+}
+
 .rail__item {
+  display: flex;
   flex: 0 0 calc((100% - 3 * var(--space-l)) / 4);
+  flex-direction: column;
+  min-width: 0;
   scroll-snap-align: start;
+}
+
+.grid__item {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
 }
 
 @media (max-width: 1240px) {
@@ -242,8 +279,9 @@
     gap: var(--space-m);
   }
 
+  /* На телефоне в ленте видно две карточки и край третьей. */
   .rail__item {
-    flex-basis: 62%;
+    flex-basis: 44%;
   }
 }
 
@@ -253,6 +291,8 @@
   display: flex;
   gap: var(--space-s);
   margin-inline: calc(-1 * var(--gutter));
+  margin-block: -6px;
+  padding-block: 6px;
   padding-inline: var(--gutter);
   overflow-x: auto;
   scrollbar-width: none;

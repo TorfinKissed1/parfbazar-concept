@@ -31,11 +31,35 @@ window.PB = window.PB || {};
     return Boolean(product && volume(product, line.ml) && Number.isInteger(line.qty) && line.qty >= 1 && line.qty <= MAX_QTY);
   }
 
-  let cart = readList(CART_KEY).filter(validLine).map(({ slug, ml, qty }) => ({ slug, ml, qty }));
-  let favs = readList(FAV_KEY).filter((slug) => bySlug.has(slug));
+  let cart = [];
+  let favs = [];
+
+  // Одинаковые строки (тот же аромат и объём) сливаются: иначе «меньше» меняло бы только первую.
+  function loadCart() {
+    const merged = new Map();
+    readList(CART_KEY).filter(validLine).forEach(({ slug, ml, qty }) => {
+      const key = `${slug}:${ml}`;
+      const known = merged.get(key);
+      merged.set(key, { slug, ml, qty: Math.min(MAX_QTY, (known ? known.qty : 0) + qty) });
+    });
+    cart = [...merged.values()];
+  }
+
+  function loadFavs() {
+    favs = readList(FAV_KEY).filter((slug) => bySlug.has(slug));
+  }
+
+  // Хранилище может быть выключено или переполнено: покупка в текущей вкладке при этом продолжается.
+  function write(key, value) {
+    try {
+      localStorage.setItem(key, JSON.stringify(value));
+    } catch (error) {
+      console.warn('Не удалось сохранить в хранилище браузера', error);
+    }
+  }
 
   function saveCart() {
-    localStorage.setItem(CART_KEY, JSON.stringify(cart));
+    write(CART_KEY, cart);
     document.dispatchEvent(new CustomEvent('pb:cart'));
   }
 
@@ -44,6 +68,7 @@ window.PB = window.PB || {};
   }
 
   function add(slug, ml, qty = 1) {
+    loadCart();
     const line = findLine(slug, ml);
     if (line) {
       line.qty = Math.min(MAX_QTY, line.qty + qty);
@@ -55,6 +80,7 @@ window.PB = window.PB || {};
 
   function setQty(slug, ml, qty) {
     if (qty < 1) return remove(slug, ml);
+    loadCart();
     const line = findLine(slug, ml);
     if (!line) return;
     line.qty = Math.min(MAX_QTY, qty);
@@ -62,6 +88,7 @@ window.PB = window.PB || {};
   }
 
   function remove(slug, ml) {
+    loadCart();
     cart = cart.filter((line) => !(line.slug === slug && line.ml === ml));
     saveCart();
   }
@@ -110,11 +137,30 @@ window.PB = window.PB || {};
   }
 
   function toggleFav(slug) {
+    loadFavs();
     favs = favs.includes(slug) ? favs.filter((item) => item !== slug) : [...favs, slug];
-    localStorage.setItem(FAV_KEY, JSON.stringify(favs));
+    write(FAV_KEY, favs);
     document.dispatchEvent(new CustomEvent('pb:fav'));
     return favs.includes(slug);
   }
+
+  /* Страница, возвращённая кнопкой «Назад», и соседняя вкладка держат старую корзину в памяти.
+     Перечитываем хранилище, иначе следующая покупка затёрла бы добавленное на другой странице. */
+  function sync() {
+    loadCart();
+    loadFavs();
+    document.dispatchEvent(new CustomEvent('pb:cart'));
+    document.dispatchEvent(new CustomEvent('pb:fav'));
+  }
+
+  loadCart();
+  loadFavs();
+  window.addEventListener('storage', (event) => {
+    if (event.key === CART_KEY || event.key === FAV_KEY) sync();
+  });
+  window.addEventListener('pageshow', (event) => {
+    if (event.persisted) sync();
+  });
 
   PB.SET_SIZE = SET_SIZE;
   PB.SET_PRICE = SET_PRICE;

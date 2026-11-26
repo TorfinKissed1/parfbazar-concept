@@ -1,47 +1,106 @@
-/* Главная: хиты, сет «три по 10 мл», характеры, истории, движение первого экрана. */
+/* Главная: первый экран со сменой флаконов, хиты, сет «три по 10 мл», характеры. */
 (function (PB) {
-  const { esc, icon, plural, cardHtml, productImage, productUrl, mountDialog, dialogHead, openDialog, closeDialog, reveal, reduceMotion } = PB.ui;
+  const { esc, icon, cardHtml, productImage, productUrl, mountDialog, dialogHead, openDialog, closeDialog, reveal, reduceMotion } = PB.ui;
   const store = PB.store;
-  const STORY_COUNT = 5;
-  const STORY_MIN_LENGTH = 60;
+
+  // Флаконы без фона сняты отдельно, поэтому список первого экрана задан вручную.
+  const HERO_SLIDES = [
+    { slug: 'sigarets-and-love', image: 'img/gen/cut-sigarets.webp' },
+    { slug: 'pink-addiction', image: 'img/gen/cut-pink.webp' },
+    { slug: 'angels-drink-too', image: 'img/gen/cut-angels.webp' },
+    { slug: 'africa', image: 'img/gen/cut-africa.webp' },
+  ];
+
+  function initHero() {
+    const hero = document.querySelector('[data-hero]');
+    const bottles = hero.querySelector('[data-hero-bottles]');
+    const dots = hero.querySelector('[data-hero-dots]');
+    const swap = hero.querySelector('[data-hero-swap]');
+    const slides = HERO_SLIDES.map((slide) => ({ ...slide, product: store.get(slide.slug) })).filter((slide) => slide.product);
+    let current = 0;
+
+    slides.slice(1).forEach((slide) => {
+      bottles.insertAdjacentHTML('beforeend',
+        `<img class="hero__bottle" src="${slide.image}" alt="Флакон ${esc(slide.product.title)}" width="751" height="1200">`);
+    });
+    dots.innerHTML = slides.map((slide, index) =>
+      `<button class="hero__dot${index ? '' : ' hero__dot--active'}" type="button" data-hero-dot="${index}" aria-label="${esc(slide.product.title)}"></button>`).join('');
+    const images = [...bottles.children];
+    const buttons = [...dots.children];
+
+    function show(next) {
+      if (next === current) return;
+      const { product } = slides[next];
+      images.forEach((image, index) => {
+        image.classList.toggle('hero__bottle--active', index === next);
+        image.classList.toggle('hero__bottle--leaving', index === current);
+      });
+      buttons.forEach((button, index) => button.classList.toggle('hero__dot--active', index === next));
+      const leaving = images[current];
+      setTimeout(() => leaving.classList.remove('hero__bottle--leaving'), 900);
+      current = next;
+
+      hero.querySelector('[data-hero-count]').textContent = `${String(next + 1).padStart(2, '0')} / ${String(slides.length).padStart(2, '0')}`;
+      const name = hero.querySelector('[data-hero-name]');
+      name.textContent = product.title;
+      name.href = productUrl(product);
+      hero.querySelector('[data-hero-notes]').textContent = product.notes || product.short;
+      hero.querySelector('[data-hero-price]').textContent = `от ${PB.money(store.volume(product, PB.SET_VOLUME).price)}`;
+      hero.querySelector('[data-hero-link]').href = productUrl(product);
+      swap.classList.remove('hero__swap--run');
+      void swap.offsetWidth; // перезапуск анимации подписи
+      swap.classList.add('hero__swap--run');
+    }
+
+    dots.addEventListener('click', (event) => {
+      const dot = event.target.closest('[data-hero-dot]');
+      if (dot) show(Number(dot.dataset.heroDot));
+    });
+    // Автосмена идёт от анимации полоски: полоска заполнилась, показываем следующий флакон.
+    dots.addEventListener('animationend', () => show((current + 1) % slides.length));
+
+    if (reduceMotion.matches) return;
+
+    let queued = false;
+    let pointerX = 0;
+    let pointerY = 0;
+    const update = () => {
+      queued = false;
+      hero.style.setProperty('--hero-shift', Math.min(window.scrollY, hero.offsetHeight));
+      hero.style.setProperty('--hero-mx', pointerX.toFixed(3));
+      hero.style.setProperty('--hero-my', pointerY.toFixed(3));
+    };
+    const queue = () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(update);
+    };
+    window.addEventListener('scroll', queue, { passive: true });
+    if (matchMedia('(hover: hover)').matches) {
+      hero.addEventListener('pointermove', (event) => {
+        const box = hero.getBoundingClientRect();
+        pointerX = (event.clientX - box.left) / box.width - 0.5;
+        pointerY = (event.clientY - box.top) / box.height - 0.5;
+        queue();
+      });
+    }
+  }
 
   function renderHits() {
     const hits = store.products.filter((product) => product.sections.includes('Хиты'));
     document.querySelector('[data-hits]').innerHTML = hits
-      .map((product, index) => `<div class="rail__item" data-reveal="${Math.min(index, 4)}">${cardHtml(product)}</div>`)
+      .map((product) => `<div class="rail__item">${cardHtml(product)}</div>`)
       .join('');
   }
 
   function renderMoods() {
     document.querySelector('[data-moods]').innerHTML = PB.moods.map((mood, index) => {
-      const count = store.products.filter((product) => product.moods.includes(mood.id)).length;
       return `
         <a class="mood" href="catalog.html?mood=${mood.id}" data-reveal="${index}">
           <span class="mood__media"><img class="mood__image" src="${mood.image}" alt="" width="1000" height="1000" loading="lazy"></span>
           <span class="title title--size_h3 mood__label">${mood.many}</span>
-          <span class="muted">${count} ${plural(count, 'аромат', 'аромата', 'ароматов')}</span>
         </a>`;
     }).join('');
-  }
-
-  function renderStories() {
-    const rail = document.querySelector('[data-stories]');
-    const stories = store.products
-      .filter((product) => product.story.length && product.story[0].length >= STORY_MIN_LENGTH)
-      .slice(0, STORY_COUNT);
-    rail.innerHTML = stories.map((product) => `
-      <article class="story">
-        <span class="bottle story__media"><img class="bottle__image" src="${productImage(product)}" alt="Флакон ${esc(product.title)}" width="720" height="900" loading="lazy"></span>
-        <div class="story__body">
-          <p class="story__quote">${esc(product.story[0])}</p>
-          <h3 class="title title--size_h2">${esc(product.title)}</h3>
-          <p class="story__notes">${esc(product.notes)}</p>
-          <a class="button button--light" href="${productUrl(product)}">К аромату</a>
-        </div>
-      </article>`).join('');
-    const scroll = (direction) => rail.scrollBy({ left: direction * rail.clientWidth, behavior: 'smooth' });
-    document.querySelector('[data-stories-prev]').addEventListener('click', () => scroll(-1));
-    document.querySelector('[data-stories-next]').addEventListener('click', () => scroll(1));
   }
 
   /* Сет: три ячейки, аромат в ячейку выбирается в окне со списком. */
@@ -49,7 +108,8 @@
   function initSet() {
     const slots = document.querySelector('[data-set-slots]');
     const addButton = document.querySelector('[data-set-add]');
-    const picks = Array(PB.SET_SIZE).fill(null);
+    // Ячейки сразу заняты хитами: блок выглядит готовым предложением, каждый аромат можно заменить.
+    const picks = store.products.filter((product) => product.sections.includes('Хиты')).slice(0, PB.SET_SIZE).map((product) => product.slug);
     let activeSlot = 0;
 
     const picker = mountDialog(`
@@ -83,7 +143,8 @@
         : '<li class="picker__empty">Ничего не нашлось</li>';
     }
 
-    function renderSlots() {
+    // freshIndex: ячейка, в которую флакон попал только что. Запрыгивает только он.
+    function renderSlots(freshIndex = -1) {
       slots.innerHTML = picks.map((slug, index) => {
         const product = slug && store.get(slug);
         if (!product) {
@@ -92,7 +153,7 @@
         }
         return `<li class="slot slot--filled">
           <button class="slot__pick" type="button" data-slot="${index}" aria-label="Заменить ${esc(product.title)}">
-            <img class="slot__image" src="${productImage(product)}" alt="" width="240" height="300">
+            <img class="slot__image${index === freshIndex ? ' slot__image--fresh' : ''}" src="${productImage(product)}" alt="" width="240" height="300">
             <span class="slot__label">${esc(product.title)}</span>
           </button>
           <button class="icon-button slot__remove" type="button" data-slot-remove="${index}" aria-label="Убрать ${esc(product.title)}">${icon('close', 'icon--size_s')}</button>
@@ -127,7 +188,7 @@
       const pick = event.target.closest('[data-pick]');
       if (!pick) return;
       picks[activeSlot] = pick.dataset.pick;
-      renderSlots();
+      renderSlots(activeSlot);
       closeDialog(picker);
     });
 
@@ -141,31 +202,11 @@
     renderSlots();
   }
 
-  // Фото первого экрана уезжает медленнее страницы, текст уходит вверх и гаснет.
-  function initHero() {
-    const hero = document.querySelector('[data-hero]');
-    if (reduceMotion.matches) return;
-    let queued = false;
-    const update = () => {
-      queued = false;
-      const height = hero.offsetHeight;
-      const shift = Math.min(window.scrollY, height);
-      hero.style.setProperty('--hero-shift', shift);
-      hero.style.setProperty('--hero-fade', Math.max(0, 1 - shift / (height * 0.7)).toFixed(3));
-    };
-    window.addEventListener('scroll', () => {
-      if (queued) return;
-      queued = true;
-      requestAnimationFrame(update);
-    }, { passive: true });
-  }
-
   document.addEventListener('DOMContentLoaded', () => {
+    initHero();
     renderHits();
     renderMoods();
-    renderStories();
     initSet();
-    initHero();
     reveal();
   });
 })(window.PB);

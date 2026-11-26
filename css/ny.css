@@ -1,0 +1,221 @@
+/* Новогодняя тема: всё под классом .theme-ny на <html>, его ставит js/ny.js по ?ny=1.
+   Без класса файл ничего не меняет. Цвета матовые: сайт без свечений и ореолов. */
+
+.theme-ny {
+  --color-ny-red: #8a2c24;
+  --color-ny-green: #2f4a37;
+  --color-ny-bulb-red: #a8453a;
+  --color-ny-bulb-amber: #c98f3e;
+  --color-ny-bulb-green: #557253;
+  --color-ny-bulb-milk: #ece2cc;
+  --color-ny-wire: #3b322a;
+  --color-ny-snow: rgba(255, 255, 255, 0.95);
+  --color-ny-snow-edge: rgba(107, 97, 87, 0.3);
+
+  --ny-top-height: 36px;
+  --ny-side-width: 30px;
+  /* Поле между краем окна и содержимым: контейнер не шире --container, внутри у него отступ --gutter. */
+  --ny-side-field: calc((100vw - min(100vw, var(--container))) / 2 + var(--gutter));
+}
+
+/* Акценты в цвете */
+
+.theme-ny .ticker {
+  background: var(--color-ny-red);
+}
+
+.theme-ny .card__badge {
+  background: var(--color-ny-green);
+}
+
+.theme-ny .set-progress__dot {
+  border-color: var(--color-ny-red);
+}
+
+.theme-ny .set-progress__dot--filled {
+  background: var(--color-ny-red);
+}
+
+/* Гирлянды */
+
+.ny-garland {
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.ny-garland__svg {
+  display: block;
+  max-width: none;
+}
+
+/* Горизонтальная висит под шапкой и едет вместе с ней, когда шапка прилипает. */
+.ny-garland--top {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  left: 0;
+  height: var(--ny-top-height);
+}
+
+.ny-garland--top .ny-garland__svg {
+  width: auto;
+  height: 100%;
+}
+
+/* Боковые живут в полях у краёв окна; под шапкой, чтобы не спорить с ней, но над содержимым. */
+.ny-garland--side {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  z-index: calc(var(--z-header) - 1);
+  display: none;
+  width: var(--ny-side-width);
+}
+
+.ny-garland--side .ny-garland__svg {
+  width: 100%;
+  height: auto;
+}
+
+.ny-garland--left {
+  left: clamp(2px, var(--ny-side-field) - var(--ny-side-width) - 6px, 28px);
+}
+
+/* Правая та же гирлянда в зеркале: лампочки смотрят внутрь страницы. */
+.ny-garland--right {
+  right: clamp(2px, var(--ny-side-field) - var(--ny-side-width) - 6px, 28px);
+  transform: scaleX(-1);
+}
+
+@media (min-width: 1280px) {
+  .ny-garland--side {
+    display: block;
+  }
+}
+
+.ny-garland__wire {
+  fill: none;
+  stroke: var(--color-ny-wire);
+  stroke-width: 1.2;
+  stroke-linecap: round;
+}
+
+.ny-garland__cap {
+  fill: var(--color-ny-wire);
+}
+
+.ny-garland__shine {
+  fill: #fff;
+  opacity: 0.22;
+}
+
+.ny-garland__bulb {
+  animation: ny-twinkle 3.4s ease-in-out infinite alternate;
+}
+
+.ny-garland__bulb--group_2 {
+  animation-duration: 4.3s;
+}
+
+.ny-garland__bulb--group_3 {
+  animation-duration: 5.6s;
+}
+
+.ny-garland__bulb--red .ny-garland__glass {
+  fill: var(--color-ny-bulb-red);
+}
+
+.ny-garland__bulb--amber .ny-garland__glass {
+  fill: var(--color-ny-bulb-amber);
+}
+
+.ny-garland__bulb--green .ny-garland__glass {
+  fill: var(--color-ny-bulb-green);
+}
+
+.ny-garland__bulb--milk .ny-garland__glass {
+  fill: var(--color-ny-bulb-milk);
+}
+
+@keyframes ny-twinkle {
+  0%,
+  35% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.45;
+  }
+}
+
+/* Еловые ветки выглядывают из верхних углов ореховой стены первого экрана.
+   Слой стоит первым в .hero: название бренда, флакон и тексты лежат поверх веток.
+   Одна картинка на оба угла: левый угол берёт её левую часть, правый правую. */
+
+.ny-branches {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  pointer-events: none;
+}
+
+.ny-branches__corner {
+  position: absolute;
+  top: 0;
+  width: clamp(150px, 22vw, 400px);
+  aspect-ratio: 645 / 463;
+  background: url("../img/gen/ny-branches.webp") no-repeat;
+  background-size: calc(100% / 0.42) auto;
+  animation: ny-branches 1s var(--ease-out) 0.6s both;
+}
+
+/* Внутренний край обрезанной картинки растворяется, иначе ветки обрываются ровной линией. */
+.ny-branches__corner--left {
+  left: 0;
+  background-position: left top;
+  mask-image: linear-gradient(to right, #000 62%, transparent 96%);
+}
+
+.ny-branches__corner--right {
+  right: 0;
+  background-position: right top;
+  mask-image: linear-gradient(to left, #000 62%, transparent 96%);
+}
+
+@keyframes ny-branches {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+}
+
+/* Снег */
+
+.ny-snow {
+  position: fixed;
+  inset: 0;
+  z-index: calc(var(--z-header) + 1);
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .theme-ny {
+    --ny-top-height: 26px;
+  }
+}
+
+@media (max-width: 480px) {
+  .ny-branches__corner {
+    width: 32vw;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ny-garland__bulb,
+  .ny-branches__corner {
+    animation: none;
+  }
+}

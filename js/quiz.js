@@ -52,7 +52,7 @@
     const result = pick(answers);
     body.innerHTML = `
       <div class="quiz__top"><span class="muted">Вам подойдут</span><button class="link quiz__back" type="button" data-restart>Пройти заново</button></div>
-      <div class="quiz__result">${result.map(cardHtml).join('')}</div>
+      <div class="quiz__result">${result.map((product) => cardHtml(product)).join('')}</div>
       <button class="button button--wide quiz__set" type="button" data-take>Все три по ${PB.SET_VOLUME}&nbsp;мл за ${PB.money(PB.SET_PRICE)}</button>`;
     body.querySelector('[data-take]').addEventListener('click', () => {
       result.forEach((product) => PB.store.add(product.slug, PB.SET_VOLUME));

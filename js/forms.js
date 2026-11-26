@@ -24,9 +24,16 @@
 
   function maskPhone(input) {
     let previous = '';
-    input.addEventListener('input', () => {
+    // Вставка заменяет поле целиком: иначе «+7 (» перед вставленным номером дало бы лишнюю семёрку.
+    input.addEventListener('paste', (event) => {
+      event.preventDefault();
+      previous = formatPhone(phoneDigits(event.clipboardData.getData('text')));
+      input.value = previous;
+      input.dispatchEvent(new Event('input', { bubbles: true }));
+    });
+    input.addEventListener('input', (event) => {
       let digits = phoneDigits(input.value);
-      const erased = input.value.length < previous.length;
+      const erased = (event.inputType || '').startsWith('delete');
       // Стёрли скобку, пробел или дефис: цифры те же, значит убираем последнюю цифру.
       if (erased && digits === phoneDigits(previous)) digits = digits.slice(0, -1);
       // Осталось одно «+7»: чистим поле, иначе его не стереть.
@@ -123,7 +130,7 @@
           <div class="quick-buy__info">
             <span class="title title--size_h3">${esc(product.title)}</span>
             <span class="muted">${ml}&nbsp;мл</span>
-            ${PB.ui.priceHtml(item)}
+            ${PB.ui.priceHtml(item, '')}
           </div>
         </div>
         ${fieldHtml({ name: 'name', label: 'Имя', rule: 'name', autocomplete: 'name' })}

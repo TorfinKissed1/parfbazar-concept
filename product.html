@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Аромат Parf Bazar</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=Sofia+Sans+Extra+Condensed:wght@600;800&family=Spectral:ital@0;1&display=swap">
+  <link rel="stylesheet" href="css/base.css?v=1">
+  <link rel="stylesheet" href="css/chrome.css?v=1">
+  <link rel="stylesheet" href="css/shell.css?v=1">
+  <link rel="stylesheet" href="css/card.css?v=1">
+  <link rel="stylesheet" href="css/blocks.css?v=1">
+  <link rel="stylesheet" href="css/product.css?v=1">
+  <script defer src="js/products-data.js?v=1"></script>
+  <script defer src="js/store.js?v=1"></script>
+  <script defer src="js/ui.js?v=1"></script>
+  <script defer src="js/search.js?v=1"></script>
+  <script defer src="js/forms.js?v=1"></script>
+  <script defer src="js/quiz.js?v=1"></script>
+  <script defer src="js/product.js?v=1"></script>
+</head>
+<body>
+  <svg class="sprite" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="heart" viewBox="0 0 24 24"><path d="M12 20.5s-7.5-4.6-7.5-10.2A4.3 4.3 0 0 1 12 7.6a4.3 4.3 0 0 1 7.5 2.7c0 5.6-7.5 10.2-7.5 10.2Z"/></symbol>
+    <symbol id="bag" viewBox="0 0 24 24"><path d="M5 8.5h14l-1 11.5H6L5 8.5Z"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5"/></symbol>
+    <symbol id="burger" viewBox="0 0 24 24"><path d="M4 8h16M4 16h16"/></symbol>
+    <symbol id="close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+    <symbol id="plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="minus" viewBox="0 0 24 24"><path d="M5 12h14"/></symbol>
+    <symbol id="check" viewBox="0 0 24 24"><path d="m5 12.5 4.5 4.5L19 7.5"/></symbol>
+    <symbol id="arrow-right" viewBox="0 0 24 24"><path d="M4 12h16M14 6l6 6-6 6"/></symbol>
+    <symbol id="arrow-left" viewBox="0 0 24 24"><path d="M20 12H4M10 6l-6 6 6 6"/></symbol>
+    <symbol id="chevron-down" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></symbol>
+    <symbol id="search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4 4"/></symbol>
+    <symbol id="home" viewBox="0 0 24 24"><path d="M4.5 10.5 12 4.5l7.5 6V19.5h-5v-5h-5v5h-5v-9Z"/></symbol>
+    <symbol id="grid" viewBox="0 0 24 24"><path d="M5 5h5.5v5.5H5zM13.5 5H19v5.5h-5.5zM5 13.5h5.5V19H5zM13.5 13.5H19V19h-5.5z"/></symbol>
+    <symbol id="sparkle" viewBox="0 0 24 24"><path d="M11 4c.6 3.7 2.3 5.4 6 6-3.7.6-5.4 2.3-6 6-.6-3.7-2.3-5.4-6-6 3.7-.6 5.4-2.3 6-6Z"/><path d="M18 15v5M15.5 17.5h5"/></symbol>
+  </svg>
+
+  <a class="ticker" href="index.html#set" aria-label="Три аромата по 10 мл за 3 700 ₽">
+    <span class="ticker__track" aria-hidden="true">
+      <span class="ticker__item">3 по 10 мл за 3 700 ₽</span><span class="ticker__item">Собери свой сет</span>
+      <span class="ticker__item">3 по 10 мл за 3 700 ₽</span><span class="ticker__item">Собери свой сет</span>
+      <span class="ticker__item">3 по 10 мл за 3 700 ₽</span><span class="ticker__item">Собери свой сет</span>
+      <span class="ticker__item">3 по 10 мл за 3 700 ₽</span><span class="ticker__item">Собери свой сет</span>
+      <span class="ticker__item">3 по 10 мл за 3 700 ₽</span><span class="ticker__item">Собери свой сет</span>
+      <span class="ticker__item">3 по 10 мл за 3 700 ₽</span><span class="ticker__item">Собери свой сет</span>
+      <span class="ticker__item">3 по 10 мл за 3 700 ₽</span><span class="ticker__item">Собери свой сет</span>
+      <span class="ticker__item">3 по 10 мл за 3 700 ₽</span><span class="ticker__item">Собери свой сет</span>
+    </span>
+  </a>
+
+  <header class="header">
+    <div class="container header__inner">
+      <div class="header__side">
+        <button class="icon-button header__burger" type="button" data-open="menu" aria-label="Меню">
+          <svg class="icon" aria-hidden="true"><use href="#burger"></use></svg>
+        </button>
+        <nav class="header__nav" aria-label="Основное меню">
+          <a class="header__link" href="catalog.html">Каталог</a>
+          <a class="header__link" href="index.html#set">Собрать сет</a>
+          <button class="header__link" type="button" data-open="quiz">Подбор аромата</button>
+          <a class="header__link" href="index.html#stores">Магазины</a>
+        </nav>
+      </div>
+      <a class="logo header__logo" href="index.html">Parf Bazar</a>
+      <div class="header__side header__side--end">
+        <form class="site-search header__search" action="catalog.html" method="get" role="search" data-site-search-form>
+          <label class="site-search__field">
+            <svg class="icon icon--size_s site-search__icon" aria-hidden="true"><use href="#search"></use></svg>
+            <input class="site-search__input" type="search" name="q" placeholder="Поиск ароматов" aria-label="Поиск ароматов"
+              autocomplete="off" enterkeyhint="search" maxlength="60" data-site-search>
+          </label>
+          <div class="site-search__panel" data-site-search-panel></div>
+        </form>
+        <div class="header__actions">
+          <a class="icon-button" href="catalog.html?filter=fav" aria-label="Избранное">
+            <svg class="icon" aria-hidden="true"><use href="#heart"></use></svg>
+            <span class="icon-button__count" data-fav-count hidden>0</span>
+          </a>
+          <button class="icon-button" type="button" data-open="cart" aria-label="Корзина">
+            <svg class="icon" aria-hidden="true"><use href="#bag"></use></svg>
+            <span class="icon-button__count" data-cart-count hidden>0</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="section section--tight">
+      <div class="container" data-product></div>
+    </section>
+
+    <section class="section section--surface" data-related-section hidden>
+      <div class="container">
+        <div class="section__head">
+          <h2 class="title title--size_h2" data-reveal="0">Вам может понравиться</h2>
+          <div class="section__tools">
+            <a class="link section__more" href="catalog.html">Все ароматы</a>
+            <div class="arrows">
+              <button class="icon-button arrows__button" type="button" data-scroll="-1" data-scroll-target="[data-related]" aria-label="Назад">
+                <svg class="icon" aria-hidden="true"><use href="#arrow-left"></use></svg>
+              </button>
+              <button class="icon-button arrows__button" type="button" data-scroll="1" data-scroll-target="[data-related]" aria-label="Вперёд">
+                <svg class="icon" aria-hidden="true"><use href="#arrow-right"></use></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="rail" data-related></div>
+        <a class="button button--ghost button--wide section__all" href="catalog.html">Все ароматы</a>
+      </div>
+    </section>
+
+    <div class="buy-bar" data-buy-bar>
+      <div class="container buy-bar__inner">
+        <span class="buy-bar__info" data-buy-bar-info></span>
+        <button class="button" type="button" data-product-add>В корзину</button>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__top">
+        <div class="footer__brand"><a class="logo footer__logo" href="index.html">Parf Bazar</a></div>
+        <div class="footer__column">
+          <h2 class="footer__heading">Покупателям</h2>
+          <a class="footer__link" href="catalog.html">Каталог</a>
+          <a class="footer__link" href="index.html#set">Собрать сет</a>
+          <a class="footer__link" href="index.html#stores">Магазины</a>
+        </div>
+        <div class="footer__column">
+          <h2 class="footer__heading">Контакты</h2>
+          <a class="footer__link" href="tel:+79150801691">+7 915 080-16-91</a>
+          <a class="footer__link" href="mailto:efemerclub@gmail.com">efemerclub@gmail.com</a>
+          <a class="footer__link" href="https://t.me/parfbazar" target="_blank" rel="noopener">Telegram</a>
+          <a class="footer__link" href="https://vk.com/parf_bazar" target="_blank" rel="noopener">ВКонтакте</a>
+        </div>
+        <div class="footer__column">
+          <h2 class="footer__heading">Магазины</h2>
+          <p>Санкт-Петербург, ТЦ «Европолис»</p>
+          <p class="footer__note">10:00–22:00</p>
+          <p>Великий Новгород, ТЦ «Волна»</p>
+          <p class="footer__note">11:00–20:00</p>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>ИП Киричева Е.И.</span>
+        <span>ОГРНИП 323530000011140, ИНН 519036821960</span>
+      </div>
+    </div>
+  </footer>
+
+  <nav class="tabbar" aria-label="Разделы">
+    <a class="tabbar__item" href="index.html" data-tab="home">
+      <svg class="icon" aria-hidden="true"><use href="#home"></use></svg>
+      <span class="tabbar__label">Главная</span>
+    </a>
+    <button class="tabbar__item" type="button" data-open="menu" data-tab="catalog">
+      <svg class="icon" aria-hidden="true"><use href="#grid"></use></svg>
+      <span class="tabbar__label">Каталог</span>
+    </button>
+    <button class="tabbar__item" type="button" data-open="quiz">
+      <svg class="icon" aria-hidden="true"><use href="#sparkle"></use></svg>
+      <span class="tabbar__label">Подбор</span>
+    </button>
+    <a class="tabbar__item" href="catalog.html?filter=fav" data-tab="fav">
+      <span class="tabbar__icon">
+        <svg class="icon" aria-hidden="true"><use href="#heart"></use></svg>
+        <span class="icon-button__count tabbar__count" data-fav-count hidden>0</span>
+      </span>
+      <span class="tabbar__label">Избранное</span>
+    </a>
+    <button class="tabbar__item" type="button" data-open="cart" data-tab="cart">
+      <span class="tabbar__icon">
+        <svg class="icon" aria-hidden="true"><use href="#bag"></use></svg>
+        <span class="icon-button__count tabbar__count" data-cart-count hidden>0</span>
+      </span>
+      <span class="tabbar__label">Корзина</span>
+    </button>
+  </nav>
+</body>
+</html>

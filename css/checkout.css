@@ -1,0 +1,186 @@
+.checkout__title {
+  margin-bottom: var(--space-xl);
+}
+
+.checkout {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--space-xl) var(--space-2xl);
+}
+
+.checkout__form {
+  display: flex;
+  flex: 3 1 460px;
+  flex-direction: column;
+  gap: var(--space-xl);
+  min-width: 0;
+}
+
+.checkout__legend {
+  margin-bottom: var(--space-m);
+}
+
+.checkout__fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-m);
+}
+
+.checkout__field {
+  flex: 1 1 240px;
+}
+
+.checkout__field--wide {
+  flex-basis: 100%;
+}
+
+.checkout__choices {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+}
+
+/* Поле адреса раскрывается только для доставки СДЭК. */
+.checkout__address {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--transition);
+}
+
+.checkout__address--open {
+  grid-template-rows: 1fr;
+}
+
+.checkout__address-inner {
+  overflow: hidden;
+}
+
+.checkout__address-field {
+  padding-top: var(--space-m);
+}
+
+.checkout__confirm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+}
+
+.checkout__summary {
+  position: sticky;
+  top: calc(var(--header-height) + var(--header-search-height, 0px) + var(--space-l));
+  flex: 2 1 340px;
+  min-width: 0;
+  padding: var(--space-l);
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+}
+
+.checkout__summary-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-m);
+  margin-bottom: var(--space-s);
+}
+
+.checkout__totals {
+  margin-top: var(--space-m);
+}
+
+@media (max-width: 1024px) {
+  .checkout__summary {
+    position: static;
+    order: -1;
+  }
+}
+
+/* Вариант доставки или оплаты */
+
+.choice {
+  position: relative;
+  display: flex;
+  cursor: pointer;
+}
+
+.choice__input {
+  position: absolute;
+  opacity: 0;
+}
+
+.choice__body {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  min-height: var(--control-height);
+  justify-content: center;
+  padding: var(--space-m) var(--space-m) var(--space-m) 52px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+  transition: border-color var(--transition);
+}
+
+.choice__body::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: var(--space-m);
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  border: 1px solid var(--color-muted);
+  border-radius: 50%;
+  transition: border-color var(--transition), border-width var(--transition);
+}
+
+.choice__input:checked + .choice__body {
+  border-color: var(--color-ink);
+}
+
+.choice__input:checked + .choice__body::before {
+  border-width: 6px;
+  border-color: var(--color-ink);
+}
+
+.choice__input:focus-visible + .choice__body {
+  outline: 2px solid var(--color-wood);
+  outline-offset: 3px;
+}
+
+.choice__title {
+  font-weight: 500;
+}
+
+.choice__note {
+  font-size: var(--fs-small);
+  color: var(--color-muted);
+}
+
+@media (hover: hover) {
+  .choice:hover .choice__body {
+    border-color: var(--color-ink);
+  }
+}
+
+/* Заказ принят и пустая корзина */
+
+.checkout-done {
+  max-width: 640px;
+}
+
+.checkout-done__order {
+  margin-bottom: var(--space-l);
+  padding: var(--space-l);
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+}
+
+.checkout-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-l);
+}
