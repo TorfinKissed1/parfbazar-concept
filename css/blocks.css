@@ -111,6 +111,102 @@
   min-width: 0;
 }
 
+.quick-buy__group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+}
+
+.quick-buy__legend {
+  margin-bottom: var(--space-s);
+  font-weight: 600;
+}
+
+/* Поле адреса раскрывается только для доставки СДЭК. */
+.quick-buy__address {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--transition);
+}
+
+.quick-buy__address--open {
+  grid-template-rows: 1fr;
+}
+
+.quick-buy__address-inner {
+  overflow: hidden;
+}
+
+/* Вариант доставки или оплаты */
+
+.choice {
+  position: relative;
+  display: flex;
+  cursor: pointer;
+}
+
+.choice__input {
+  position: absolute;
+  opacity: 0;
+}
+
+.choice__body {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: 2px;
+  min-height: var(--control-height);
+  justify-content: center;
+  padding: var(--space-m) var(--space-m) var(--space-m) 52px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-m);
+  background: var(--color-surface);
+  transition: border-color var(--transition);
+}
+
+.choice__body::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: var(--space-m);
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  border: 1px solid var(--color-muted);
+  border-radius: 50%;
+  transition: border-color var(--transition), border-width var(--transition);
+}
+
+.choice__input:checked + .choice__body {
+  border-color: var(--color-ink);
+}
+
+.choice__input:checked + .choice__body::before {
+  border-width: 6px;
+  border-color: var(--color-ink);
+}
+
+.choice__input:focus-visible + .choice__body {
+  outline: 2px solid var(--color-wood);
+  outline-offset: 3px;
+}
+
+.choice__title {
+  font-weight: 500;
+}
+
+.choice__note {
+  font-size: var(--fs-small);
+  color: var(--color-muted);
+}
+
+@media (hover: hover) {
+  .choice:hover .choice__body {
+    border-color: var(--color-ink);
+  }
+}
+
 /* Экран «заказ принят» */
 
 .order-done {

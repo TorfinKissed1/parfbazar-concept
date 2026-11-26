@@ -113,6 +113,29 @@
 
   /* Покупка в 1 клик */
 
+  /* Варианты получения и оплаты повторяют форму оформления заказа (tools/pages/checkout.html):
+     при правке менять в обоих местах. */
+  const DELIVERY = [
+    { id: 'cdek', title: 'СДЭК до пункта выдачи', note: '290&nbsp;₽', cost: 290, address: true },
+    { id: 'spb', title: 'Самовывоз в Санкт-Петербурге', note: 'ТЦ «Европолис», 1&nbsp;этаж. Бесплатно', cost: 0 },
+    { id: 'vn', title: 'Самовывоз в Великом Новгороде', note: 'ТЦ «Волна», 1&nbsp;этаж. Бесплатно', cost: 0 },
+  ];
+  const PAYMENT = [
+    { id: 'online', title: 'Картой онлайн' },
+    { id: 'receipt', title: 'При получении' },
+  ];
+
+  function choicesHtml(name, options) {
+    return options.map((option, index) => `
+      <label class="choice">
+        <input class="choice__input" type="radio" name="${name}" value="${option.id}"${index ? '' : ' checked'}>
+        <span class="choice__body">
+          <span class="choice__title">${option.title}</span>
+          ${option.note ? `<span class="choice__note">${option.note}</span>` : ''}
+        </span>
+      </label>`).join('');
+  }
+
   let quickBuy;
 
   function openQuickBuy(product, ml) {
@@ -135,11 +158,41 @@
         </div>
         ${fieldHtml({ name: 'name', label: 'Имя', rule: 'name', autocomplete: 'name' })}
         ${fieldHtml({ name: 'phone', label: 'Телефон', rule: 'phone', type: 'tel', autocomplete: 'tel', inputmode: 'tel' })}
-        <button class="button button--wide" type="submit">Оформить заказ</button>
+        ${fieldHtml({ name: 'email', label: 'Электронная почта', rule: 'email', type: 'email', autocomplete: 'email', inputmode: 'email' })}
+        <fieldset class="quick-buy__group">
+          <legend class="quick-buy__legend">Получение</legend>
+          ${choicesHtml('delivery', DELIVERY)}
+          <div class="quick-buy__address quick-buy__address--open" data-quick-address>
+            <div class="quick-buy__address-inner">
+              ${fieldHtml({ name: 'address', label: 'Город и пункт выдачи', rule: 'address', autocomplete: 'street-address' })}
+            </div>
+          </div>
+        </fieldset>
+        <fieldset class="quick-buy__group">
+          <legend class="quick-buy__legend">Оплата</legend>
+          ${choicesHtml('payment', PAYMENT)}
+        </fieldset>
+        <button class="button button--wide" type="submit" data-quick-submit></button>
         ${consentHtml()}
       </form>`;
     const form = body.querySelector('[data-quick-form]');
+    const address = form.querySelector('[data-quick-address]');
+    const submit = form.querySelector('[data-quick-submit]');
+
+    // Поле адреса нужно только для СДЭК; итог на кнопке считается вместе с доставкой.
+    function syncDelivery() {
+      const chosen = DELIVERY.find((option) => option.id === form.elements.delivery.value);
+      address.classList.toggle('quick-buy__address--open', Boolean(chosen.address));
+      form.elements.address.disabled = !chosen.address;
+      if (!chosen.address) form.elements.address.closest('.field').classList.remove('field--error');
+      submit.textContent = `Оформить заказ · ${PB.money(item.price + chosen.cost)}`;
+    }
+
     bind(form);
+    syncDelivery();
+    form.addEventListener('change', (event) => {
+      if (event.target.name === 'delivery') syncDelivery();
+    });
     form.addEventListener('submit', (event) => {
       event.preventDefault();
       if (!validate(form)) return;

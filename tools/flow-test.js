@@ -85,7 +85,11 @@ async function run(browser, width, height) {
   await page.waitForTimeout(400);
   await page.locator('#quick-buy button[type="submit"]').click();
   const quickErrors = await page.locator('#quick-buy .field--error').count();
-  check('пустая заявка показывает ошибки', quickErrors === 2, `полей с ошибкой ${quickErrors}`);
+  check('пустая заявка показывает ошибки', quickErrors === 4, `полей с ошибкой ${quickErrors}`);
+  const quickSubmit = page.locator('#quick-buy button[type="submit"]');
+  check('итог заявки со СДЭК', plain(await quickSubmit.innerText()).includes('5 190'), plain(await quickSubmit.innerText()));
+  await page.locator('#quick-buy input[value="spb"]').check({ force: true });
+  check('итог заявки при самовывозе', plain(await quickSubmit.innerText()).includes('4 900'), plain(await quickSubmit.innerText()));
   const phone = page.locator('#quick-buy input[name="phone"]');
   await phone.pressSequentially('89991234567');
   check('маска телефона', (await phone.inputValue()) === '+7 (999) 123-45-67', await phone.inputValue());
@@ -95,6 +99,7 @@ async function run(browser, width, height) {
   check('стирание через дефис убирает цифры', (await phone.inputValue()) === '+7 (999) 123-4', await phone.inputValue());
   await phone.pressSequentially('567');
   await page.locator('#quick-buy input[name="name"]').fill('Анна');
+  await page.locator('#quick-buy input[name="email"]').fill('anna@example.com');
   await page.locator('#quick-buy .check').click();
   await page.locator('#quick-buy button[type="submit"]').click();
   await page.waitForTimeout(300);
