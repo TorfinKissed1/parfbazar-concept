@@ -370,17 +370,6 @@
   /* Окно каталога и нижняя навигация */
 
   // Адреса разделов читает каталог (js/catalog.js), схему менять вместе с ним.
-  const CATALOG_SECTIONS = [
-    ['Все ароматы', 'catalog.html'],
-    ['Хиты', 'catalog.html?filter=hits'],
-    ['Зимняя коллекция', 'catalog.html?filter=winter'],
-    ['Сладкие', 'catalog.html?moods=sweet'],
-    ['Свежие', 'catalog.html?moods=fresh'],
-    ['Тёплые и пряные', 'catalog.html?moods=warm'],
-    ['Цветочные', 'catalog.html?moods=floral'],
-    ['Мужские', 'catalog.html?filter=men'],
-  ];
-
   // Шапка и навигация одинаковы на всех страницах (их копирует сборка), текущий пункт отмечаем здесь.
   function markTab() {
     const page = location.pathname.split('/').pop() || 'index.html';
@@ -398,26 +387,6 @@
         ${dialogHead('Корзина', 'cart-title')}
         <div class="dialog__body" data-cart-body></div>
         <div class="dialog__foot" data-cart-foot></div>
-      </dialog>`);
-    const sections = CATALOG_SECTIONS
-      .map(([label, href]) => `<a class="menu__link" href="${href}">${label}</a>`)
-      .join('');
-    mountDialog(`
-      <dialog class="dialog dialog--left" id="menu" aria-labelledby="menu-title">
-        ${dialogHead('Каталог', 'menu-title')}
-        <div class="dialog__body">
-          <nav class="menu" aria-label="Разделы каталога">${sections}</nav>
-          <div class="menu__extra">
-            <a class="menu__sub" href="index.html#set" data-close>Собрать сет</a>
-            <button class="menu__sub" type="button" data-open="quiz">Подбор аромата</button>
-            <a class="menu__sub" href="index.html#stores" data-close>Магазины</a>
-          </div>
-          <div class="menu__contacts">
-            <a class="menu__contact" href="tel:+79150801691">+7 915 080-16-91</a>
-            <a class="menu__contact" href="https://t.me/parfbazar" target="_blank" rel="noopener">Telegram</a>
-            <a class="menu__contact" href="https://vk.com/parf_bazar" target="_blank" rel="noopener">ВКонтакте</a>
-          </div>
-        </div>
       </dialog>`);
     markTab();
 

@@ -173,6 +173,18 @@ window.PB = window.PB || {};
     { id: 'floral', label: 'Цветочный', many: 'Цветочные', image: 'img/gen/mood-floral.webp' },
   ];
 
+  // Самые частые ноты каталога: ими пользуются фильтр и меню, поэтому список считается в одном месте.
+  // Редкая нота дала бы один-два аромата и только загромождала список.
+  const NOTES_SHOWN = 12;
+  const NOTE_MIN_COUNT = 3;
+  const noteCounts = new Map();
+  products.forEach((product) => product.noteTags.forEach((tag) => noteCounts.set(tag, (noteCounts.get(tag) || 0) + 1)));
+  PB.notes = [...noteCounts]
+    .filter(([, count]) => count >= NOTE_MIN_COUNT)
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .slice(0, NOTES_SHOWN)
+    .map(([id, count]) => ({ id, count }));
+
   PB.money = (value) => `${value.toLocaleString('ru-RU')} ₽`;
 
   PB.store = {

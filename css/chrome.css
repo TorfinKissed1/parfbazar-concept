@@ -1,15 +1,9 @@
 /* Высоты постоянных полос, их учитывают липкие и закреплённые блоки страниц.
-   --header-search-height: строка поиска под шапкой (до 1024 px),
+   --header-search-height: отдельная строка поиска под шапкой (сейчас поиск стоит в самой шапке, поэтому ноль),
    --tabbar-height: нижняя навигация вместе с вырезом экрана (до 768 px). */
 :root {
   --header-search-height: 0px;
   --tabbar-height: 0px;
-}
-
-@media (max-width: 1024px) {
-  :root {
-    --header-search-height: 60px;
-  }
 }
 
 @media (max-width: 768px) {
@@ -66,39 +60,27 @@
   border-color: var(--color-line);
 }
 
+/* Порядок как в привычном магазине: логотип, кнопка каталога, поиск на всю свободную ширину, ссылки, иконки. */
 .header__inner {
+  position: relative;
   display: flex;
   align-items: center;
-  gap: var(--space-m);
+  gap: var(--space-l);
   min-height: var(--header-height);
 }
 
-.header__side {
-  display: flex;
+.header__catalog {
+  flex-shrink: 0;
+}
+
+.header__search {
   flex: 1 1 0;
-  align-items: center;
-  gap: var(--space-xs);
   min-width: 0;
-}
-
-.header__side--end {
-  justify-content: flex-end;
-  gap: var(--space-m);
-}
-
-.header__actions {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xs);
-}
-
-.header__burger {
-  display: none;
-  margin-left: -10px;
 }
 
 .header__nav {
   display: flex;
+  flex-shrink: 0;
   align-items: center;
   gap: var(--space-l);
 }
@@ -110,6 +92,14 @@
   transition: color var(--transition);
 }
 
+.header__actions {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--space-xs);
+  margin-right: -10px;
+}
+
 @media (hover: hover) {
   .header__link:hover {
     color: var(--color-wood);
@@ -117,8 +107,12 @@
 }
 
 .logo {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: var(--space-s);
   font-family: var(--font-display);
-  font-size: 34px;
+  font-size: 32px;
   font-weight: 800;
   line-height: 1;
   letter-spacing: 0.04em;
@@ -127,87 +121,61 @@
   transition: color var(--transition);
 }
 
+.logo__mark {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-s);
+}
+
 @media (hover: hover) {
   .logo:hover {
     color: var(--color-wood);
   }
 }
 
-/* До 1024 px поиск уходит отдельной строкой: правая колонка растворяется, её роль берут иконки,
-   и логотип остаётся по центру между двумя равными колонками. */
+@media (max-width: 1240px) {
+  .header__inner,
+  .header__nav {
+    gap: var(--space-m);
+  }
+}
+
+/* Планшет: ссылки уходят в окно каталога. */
 @media (max-width: 1024px) {
-  .header__inner {
-    flex-wrap: wrap;
-    row-gap: 0;
-    min-height: 0;
-  }
-
-  /* Отрицательные поля у обеих колонок поровну, иначе логотип съезжает с центра. */
-  .header__side {
-    min-height: var(--header-height);
-    margin-left: -10px;
-  }
-
-  .header__burger {
-    margin-left: 0;
-  }
-
-  .header__side--end {
-    display: contents;
-  }
-
-  .header__actions {
-    flex: 1 1 0;
-    justify-content: flex-end;
-    min-height: var(--header-height);
-    margin-right: -10px;
-  }
-
-  .header__search {
-    order: 1;
-    flex: 1 1 100%;
-    height: var(--header-search-height);
-    padding-bottom: var(--space-m);
-  }
-
-  .header__burger {
-    display: inline-flex;
-  }
-
   .header__nav {
     display: none;
   }
 }
 
-/* На телефоне каталог открывает нижняя навигация. */
+/* Телефон: в шапке только логотип и поиск. Каталог, избранное и корзина живут в нижней навигации. */
 @media (max-width: 768px) {
-  .header__burger {
-    display: none;
-  }
-}
-
-@media (max-width: 480px) {
   :root {
     --header-height: 60px;
   }
 
-  .logo {
-    font-size: 30px;
-  }
-
   .header__inner {
-    column-gap: var(--space-s);
+    gap: var(--space-m);
   }
 
+  .header__catalog,
   .header__actions {
-    gap: 0;
+    display: none;
+  }
+
+  .logo {
+    font-size: 26px;
+  }
+
+  .logo__mark {
+    width: 32px;
+    height: 32px;
   }
 }
 
-/* На самой узкой ширине логотип и две иконки иначе не помещаются по центру. */
-@media (max-width: 340px) {
-  .logo {
-    font-size: 26px;
+/* На узком экране название не помещается рядом с поиском: остаётся знак. */
+@media (max-width: 380px) {
+  .logo__text {
+    display: none;
   }
 }
 
@@ -345,9 +313,8 @@
   width: min(980px, 100vw - 2 * var(--gutter));
 }
 
-/* Панели во всю высоту: --side выезжает справа, --left слева. */
-.dialog--side,
-.dialog--left {
+/* Панель во всю высоту выезжает справа. */
+.dialog--side {
   width: min(480px, 100vw);
   height: 100dvh;
   max-height: none;
@@ -361,18 +328,6 @@
 
 .dialog--side.dialog--closing[open] {
   animation-name: side-out;
-}
-
-.dialog--left {
-  margin: 0 auto 0 0;
-}
-
-.dialog--left[open] {
-  animation-name: left-in;
-}
-
-.dialog--left.dialog--closing[open] {
-  animation-name: left-out;
 }
 
 .dialog__head {
@@ -453,79 +408,12 @@
 }
 
 @media (max-width: 768px) {
-  .dialog:not(.dialog--side):not(.dialog--left) {
+  .dialog:not(.dialog--side):not(.dialog--menu) {
     width: 100vw;
     height: 100dvh;
     max-height: none;
     margin: 0;
     border-radius: 0;
-  }
-}
-
-/* Окно каталога: разделы крупно, ниже второстепенные ссылки и контакты. */
-
-.menu {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-}
-
-.menu__link {
-  padding-block: var(--space-xs);
-  font-family: var(--font-display);
-  font-size: 40px;
-  font-weight: 800;
-  line-height: 1;
-  text-align: left;
-  text-transform: uppercase;
-  transition: color var(--transition);
-}
-
-.menu__extra {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-xs);
-  margin-top: var(--space-l);
-  padding-top: var(--space-l);
-  border-top: 1px solid var(--color-line);
-}
-
-.menu__sub {
-  padding-block: var(--space-xs);
-  font-size: 18px;
-  font-weight: 500;
-  text-align: left;
-  transition: color var(--transition);
-}
-
-.menu__contacts {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--space-s);
-  margin-top: var(--space-l);
-  color: var(--color-muted);
-}
-
-.menu__contact {
-  transition: color var(--transition);
-}
-
-@media (hover: hover) {
-  .menu__link:hover,
-  .menu__sub:hover {
-    color: var(--color-wood);
-  }
-
-  .menu__contact:hover {
-    color: var(--color-ink);
-  }
-}
-
-@media (max-width: 480px) {
-  .menu__link {
-    font-size: 34px;
   }
 }
 
