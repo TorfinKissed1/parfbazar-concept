@@ -1,0 +1,110 @@
+    <section class="section section--tight">
+      <div class="container">
+        <div data-checkout>
+          <h1 class="title title--size_h1 checkout__title">Оформление заказа</h1>
+          <div class="checkout">
+            <form class="checkout__form" data-order-form>
+              <fieldset class="checkout__group">
+                <legend class="title title--size_h3 checkout__legend">Контакты</legend>
+                <div class="checkout__fields">
+                  <label class="field checkout__field">
+                    <span class="field__label">Имя</span>
+                    <input class="field__input" name="name" type="text" data-rule="name" autocomplete="name">
+                    <span class="field__error" aria-live="polite"><span class="field__error-text"></span></span>
+                  </label>
+                  <label class="field checkout__field">
+                    <span class="field__label">Телефон</span>
+                    <input class="field__input" name="phone" type="tel" inputmode="tel" data-rule="phone" autocomplete="tel">
+                    <span class="field__error" aria-live="polite"><span class="field__error-text"></span></span>
+                  </label>
+                  <label class="field checkout__field checkout__field--wide">
+                    <span class="field__label">Электронная почта</span>
+                    <input class="field__input" name="email" type="email" inputmode="email" data-rule="email" autocomplete="email">
+                    <span class="field__error" aria-live="polite"><span class="field__error-text"></span></span>
+                  </label>
+                </div>
+              </fieldset>
+
+              <fieldset class="checkout__group">
+                <legend class="title title--size_h3 checkout__legend">Получение</legend>
+                <div class="checkout__choices">
+                  <label class="choice">
+                    <input class="choice__input" type="radio" name="delivery" value="cdek" data-cost="290" data-label="Доставка СДЭК" checked>
+                    <span class="choice__body">
+                      <span class="choice__title">СДЭК до пункта выдачи</span>
+                      <span class="choice__note">290&nbsp;₽</span>
+                    </span>
+                  </label>
+                  <label class="choice">
+                    <input class="choice__input" type="radio" name="delivery" value="spb" data-cost="0" data-label="Самовывоз">
+                    <span class="choice__body">
+                      <span class="choice__title">Самовывоз в Санкт-Петербурге</span>
+                      <span class="choice__note">ТЦ «Европолис», 1&nbsp;этаж. Бесплатно</span>
+                    </span>
+                  </label>
+                  <label class="choice">
+                    <input class="choice__input" type="radio" name="delivery" value="vn" data-cost="0" data-label="Самовывоз">
+                    <span class="choice__body">
+                      <span class="choice__title">Самовывоз в Великом Новгороде</span>
+                      <span class="choice__note">ТЦ «Волна», 1&nbsp;этаж. Бесплатно</span>
+                    </span>
+                  </label>
+                </div>
+                <div class="checkout__address checkout__address--open" data-address>
+                  <div class="checkout__address-inner">
+                    <label class="field checkout__address-field">
+                      <span class="field__label">Город и пункт выдачи</span>
+                      <input class="field__input" name="address" type="text" data-rule="address" autocomplete="street-address">
+                      <span class="field__error" aria-live="polite"><span class="field__error-text"></span></span>
+                    </label>
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="checkout__group">
+                <legend class="title title--size_h3 checkout__legend">Оплата</legend>
+                <div class="checkout__choices">
+                  <label class="choice">
+                    <input class="choice__input" type="radio" name="payment" value="online" checked>
+                    <span class="choice__body"><span class="choice__title">Картой онлайн</span></span>
+                  </label>
+                  <label class="choice">
+                    <input class="choice__input" type="radio" name="payment" value="receipt">
+                    <span class="choice__body"><span class="choice__title">При получении</span></span>
+                  </label>
+                </div>
+              </fieldset>
+
+              <label class="field">
+                <span class="field__label">Комментарий к заказу</span>
+                <textarea class="field__input field__input--area" name="comment"></textarea>
+              </label>
+
+              <div class="checkout__confirm">
+              <button class="button button--wide" type="submit" data-submit>Оформить заказ</button>
+              <label class="check">
+                <input class="check__input" type="checkbox" data-consent>
+                <span class="check__box"><svg class="icon icon--size_s" aria-hidden="true"><use href="#check"></use></svg></span>
+                <span>Даю согласие на обработку <span class="check__link">персональных данных</span></span>
+              </label>
+              </div>
+            </form>
+
+            <aside class="checkout__summary">
+              <div class="checkout__summary-head">
+                <h2 class="title title--size_h3">Ваш заказ</h2>
+                <button class="link" type="button" data-open="cart">Изменить</button>
+              </div>
+              <div data-summary></div>
+            </aside>
+          </div>
+        </div>
+
+        <div class="checkout-done" data-order-done hidden></div>
+
+        <div class="checkout-empty" data-order-empty hidden>
+          <h1 class="title title--size_h1">Корзина пуста</h1>
+          <a class="button" href="catalog.html">Перейти в каталог</a>
+        </div>
+      </div>
+    </section>

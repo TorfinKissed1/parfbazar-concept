@@ -1,0 +1,47 @@
+    <section class="section section--tight">
+      <div class="container catalog">
+        <h1 class="title title--size_h1 catalog__title">Каталог</h1>
+        <div class="catalog__layout">
+          <aside class="catalog__aside" aria-label="Фильтры" data-filter-aside></aside>
+          <div class="catalog__main">
+            <div class="catalog__top">
+              <div class="chips catalog__chips" data-chips></div>
+              <button class="button button--ghost button--size_s catalog__filter-open" type="button" data-open="catalog-filter">
+                Фильтры
+                <span class="catalog__filter-badge" data-filter-badge hidden></span>
+              </button>
+              <div class="select catalog__sort" data-select>
+                <button class="select__button" type="button" aria-haspopup="listbox" aria-expanded="false" data-select-button>
+                  <span data-select-label>Сначала популярные</span>
+                  <svg class="icon icon--size_s select__arrow" aria-hidden="true"><use href="#chevron-down"></use></svg>
+                </button>
+                <div class="select__backdrop" data-select-close></div>
+                <div class="select__panel" role="listbox" aria-label="Сортировка">
+                  <div class="select__handle" data-select-handle></div>
+                  <p class="select__title">Сортировка</p>
+                  <button class="select__option select__option--active" type="button" role="option" aria-selected="true" data-value="popular">Сначала популярные</button>
+                  <button class="select__option" type="button" role="option" aria-selected="false" data-value="cheap">Сначала дешевле</button>
+                  <button class="select__option" type="button" role="option" aria-selected="false" data-value="expensive">Сначала дороже</button>
+                  <button class="select__option" type="button" role="option" aria-selected="false" data-value="title">По названию</button>
+                </div>
+              </div>
+            </div>
+            <div class="catalog__status">
+              <p class="catalog__query" data-query hidden>
+                <span data-query-text></span>
+                <button class="catalog__query-clear" type="button" aria-label="Сбросить запрос" data-query-clear>
+                  <svg class="icon icon--size_s" aria-hidden="true"><use href="#close"></use></svg>
+                </button>
+              </p>
+              <p class="muted catalog__count" data-count></p>
+            </div>
+            <div class="grid catalog__grid" data-grid></div>
+            <div class="catalog__empty" data-empty hidden>
+              <p>Ничего не нашлось</p>
+              <button class="button button--ghost" type="button" data-reset>Сбросить фильтры</button>
+            </div>
+            <button class="button button--ghost button--wide catalog__more" type="button" data-more hidden>Показать ещё</button>
+          </div>
+        </div>
+      </div>
+    </section>

@@ -2,4 +2,7 @@
 .playwright-mcp/
 data/
 shots/
-tools/
+tools/*
+!tools/build_pages.py
+!tools/pages/
+!tools/flow-test.js
