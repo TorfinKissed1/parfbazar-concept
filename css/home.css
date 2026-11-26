@@ -5,14 +5,21 @@
 .hero {
   --hero-height: min(100svh - (var(--header-height) + var(--header-search-height, 0px)) - 34px, 900px);
   --bottle-height: calc(var(--hero-height) * 0.54);
-  --stage-bottom: calc(var(--hero-height) * 0.3);
-  --clouds-height: calc(var(--hero-height) * 0.38);
+  --stage-bottom: calc(var(--hero-height) * 0.34);
+  --clouds-height: calc(var(--hero-height) * 0.54);
   position: relative;
   height: var(--hero-height);
   min-height: 600px;
   overflow: hidden;
   background: var(--color-wood-dark) url("../img/gen/hero-wall.webp") center / cover;
   color: var(--color-paper);
+  cursor: grab;
+  /* Свайп вбок листает флаконы, прокрутка страницы вверх и вниз остаётся за браузером. */
+  touch-action: pan-y;
+}
+
+.hero--dragging {
+  cursor: grabbing;
 }
 
 /* Название бренда: слова расходятся от центра, между ними встаёт флакон. */
@@ -31,6 +38,7 @@
   letter-spacing: 0.01em;
   text-transform: uppercase;
   white-space: nowrap;
+  user-select: none;
   transform: translate3d(calc(var(--hero-mx, 0) * -10px), calc(var(--hero-shift, 0) * 0.1px), 0);
 }
 
@@ -104,7 +112,6 @@
   object-fit: cover;
   object-position: 50% 0;
   pointer-events: none;
-  transform: translate3d(0, calc(var(--hero-shift, 0) * -0.12px), 0);
   animation: hero-clouds 26s ease-in-out infinite alternate;
 }
 
@@ -114,9 +121,27 @@
   right: 0;
   bottom: 0;
   left: 0;
-  height: calc(var(--clouds-height) * 0.62);
-  background: linear-gradient(to bottom, transparent, var(--color-paper) 78%);
+  height: calc(var(--clouds-height) * 0.7);
+  background: linear-gradient(to bottom, transparent, var(--color-paper) 60%);
   pointer-events: none;
+}
+
+/* Стрелки по бокам от флакона. */
+.hero__arrow {
+  position: absolute;
+  top: calc(var(--hero-height) * 0.44);
+  z-index: 1;
+  border: 1px solid rgba(243, 238, 229, 0.45);
+  color: var(--color-paper);
+  transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.hero__arrow--prev {
+  left: calc(50% - var(--bottle-height) * 0.62);
+}
+
+.hero__arrow--next {
+  right: calc(50% - var(--bottle-height) * 0.62);
 }
 
 .hero__content {
@@ -126,36 +151,6 @@
   justify-content: flex-end;
   height: 100%;
   padding-block: var(--space-xl);
-}
-
-.hero__facts {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-l);
-  margin-bottom: auto;
-  padding-top: calc(var(--hero-height) * 0.4);
-  animation: hero-fade-up 0.9s var(--ease-out) 0.7s both;
-}
-
-.hero__fact {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-xs);
-  padding-top: var(--space-m);
-  border-top: 1px solid rgba(243, 238, 229, 0.45);
-  font-size: 15px;
-}
-
-.hero__fact--end {
-  align-items: flex-end;
-}
-
-.hero__fact-value {
-  font-family: var(--font-display);
-  font-size: 56px;
-  font-weight: 800;
-  line-height: 0.9;
-  text-transform: uppercase;
 }
 
 .hero__bottom {
@@ -266,6 +261,12 @@
 }
 
 @media (hover: hover) {
+  .hero__arrow:hover {
+    border-color: var(--color-paper);
+    background: var(--color-paper);
+    color: var(--color-ink);
+  }
+
   .hero__name:hover {
     color: var(--color-wood);
   }
@@ -319,19 +320,13 @@
   }
 }
 
-@media (max-width: 1024px) {
-  .hero__facts {
-    display: none;
-  }
-}
-
 /* Телефон: название в две строки, флакон по центру, заголовок, подпись аромата и кнопки на дымке. */
 @media (max-width: 768px) {
   .hero {
     --hero-height: clamp(540px, 100svh - (var(--header-height) + var(--header-search-height, 0px)) - 34px - var(--tabbar-height, 0px), 760px);
     --bottle-height: calc(var(--hero-height) * 0.44);
-    --stage-bottom: calc(var(--hero-height) * 0.41);
-    --clouds-height: calc(var(--hero-height) * 0.46);
+    --stage-bottom: calc(var(--hero-height) * 0.43);
+    --clouds-height: calc(var(--hero-height) * 0.52);
     min-height: 0;
   }
 
@@ -344,8 +339,16 @@
   }
 
   .hero__clouds {
-    left: -40%;
-    width: 180%;
+    left: -50%;
+    width: 200%;
+  }
+
+  .hero__arrow--prev {
+    left: var(--gutter);
+  }
+
+  .hero__arrow--next {
+    right: var(--gutter);
   }
 
   .hero__content {
@@ -428,7 +431,6 @@
 .notes-line {
   overflow: hidden;
   padding-block: var(--space-l);
-  border-bottom: 1px solid var(--color-line);
 }
 
 .notes-line__track {
@@ -628,6 +630,10 @@
   .mood {
     gap: var(--space-s);
   }
+
+  .mood__label {
+    font-size: 24px;
+  }
 }
 
 /* О формулах */
@@ -724,8 +730,21 @@
   border-radius: var(--radius-m);
 }
 
-.stores__image {
+.stores__map {
   width: 100%;
+  height: 460px;
+  background: var(--color-tile);
+}
+
+.stores__show {
+  align-self: flex-start;
+  margin-top: var(--space-xs);
+}
+
+@media (max-width: 768px) {
+  .stores__map {
+    height: 340px;
+  }
 }
 
 .stores__list {

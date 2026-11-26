@@ -4,6 +4,7 @@
   const store = PB.store;
 
   // Флаконы без фона сняты отдельно, поэтому список первого экрана задан вручную.
+  const SWIPE_DISTANCE = 40;
   const HERO_SLIDES = [
     { slug: 'sigarets-and-love', image: 'img/gen/cut-sigarets.webp' },
     { slug: 'pink-addiction', image: 'img/gen/cut-pink.webp' },
@@ -52,12 +53,38 @@
       swap.classList.add('hero__swap--run');
     }
 
+    const step = (direction) => show((current + direction + slides.length) % slides.length);
+
     dots.addEventListener('click', (event) => {
       const dot = event.target.closest('[data-hero-dot]');
       if (dot) show(Number(dot.dataset.heroDot));
     });
+    hero.addEventListener('click', (event) => {
+      const arrow = event.target.closest('[data-hero-step]');
+      if (arrow) step(Number(arrow.dataset.heroStep));
+    });
+
+    // Флаконы листаются перетаскиванием: мышью или пальцем вбок по первому экрану.
+    let dragStart = null;
+    const endDrag = () => {
+      dragStart = null;
+      hero.classList.remove('hero--dragging');
+    };
+    hero.addEventListener('pointerdown', (event) => {
+      if (event.target.closest('a, button')) return;
+      dragStart = event.clientX;
+      hero.classList.add('hero--dragging');
+    });
+    hero.addEventListener('pointerup', (event) => {
+      if (dragStart === null) return;
+      const moved = event.clientX - dragStart;
+      endDrag();
+      if (Math.abs(moved) >= SWIPE_DISTANCE) step(moved < 0 ? 1 : -1);
+    });
+    hero.addEventListener('pointercancel', endDrag);
+    hero.addEventListener('pointerleave', endDrag);
     // Автосмена идёт от анимации полоски: полоска заполнилась, показываем следующий флакон.
-    dots.addEventListener('animationend', () => show((current + 1) % slides.length));
+    dots.addEventListener('animationend', () => step(1));
 
     if (reduceMotion.matches) return;
 
@@ -202,8 +229,63 @@
     renderSlots();
   }
 
+  /* Карта магазинов на JS API Яндекс.Карт: из элементов управления только масштаб и «моё местоположение».
+     Скрипт карт подгружается, когда секция подходит к экрану, чтобы не тормозить загрузку страницы. */
+  const STORES = [
+    { title: 'Санкт-Петербург', address: 'ТЦ «Европолис», 1 этаж', coords: [59.9875646, 30.3537971] },
+    { title: 'Великий Новгород', address: 'ТЦ «Волна», 1 этаж', coords: [58.5387276, 31.2621979] },
+  ];
+  const STORE_ZOOM = 16;
+
+  function initStores() {
+    const container = document.querySelector('[data-map]');
+    const buttons = [...document.querySelectorAll('[data-map-store]')];
+    let map = null;
+    let shown = -1;
+
+    function showAll() {
+      map.setBounds(map.geoObjects.getBounds(), { checkZoomRange: true, zoomMargin: 60, duration: 400 });
+    }
+
+    function build() {
+      map = new window.ymaps.Map(container, { center: [59.27, 30.81], zoom: 7, controls: [] }, { suppressMapOpenBlock: true });
+      map.controls.add('zoomControl', { size: 'small' });
+      map.controls.add('geolocationControl');
+      // Колесо мыши листает страницу, а не карту: иначе прокрутка застревает на секции.
+      map.behaviors.disable('scrollZoom');
+      STORES.forEach((store) => {
+        map.geoObjects.add(new window.ymaps.Placemark(store.coords,
+          { balloonContentHeader: store.title, balloonContentBody: store.address, hintContent: store.address },
+          { preset: 'islands#dotIcon', iconColor: '#5e3820' }));
+      });
+      showAll();
+    }
+
+    const observer = new IntersectionObserver(([entry]) => {
+      if (!entry.isIntersecting) return;
+      observer.disconnect();
+      const script = document.createElement('script');
+      script.src = 'https://api-maps.yandex.ru/2.1/?lang=ru_RU';
+      script.onload = () => window.ymaps.ready(build);
+      document.head.append(script);
+    }, { rootMargin: '600px' });
+    observer.observe(container);
+
+    // Кнопка у магазина приближает карту к нему, повторное нажатие возвращает обе точки.
+    buttons.forEach((button, index) => button.addEventListener('click', () => {
+      if (!map) return;
+      shown = shown === index ? -1 : index;
+      if (shown === -1) showAll();
+      else map.setCenter(STORES[shown].coords, STORE_ZOOM, { duration: 400 });
+      buttons.forEach((node, position) => {
+        node.textContent = position === shown ? 'Показать оба магазина' : 'Показать на карте';
+      });
+    }));
+  }
+
   document.addEventListener('DOMContentLoaded', () => {
     initHero();
+    initStores();
     renderHits();
     renderMoods();
     initSet();

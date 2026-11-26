@@ -14,6 +14,8 @@
   <link rel="stylesheet" href="css/card.css?v=1">
   <link rel="stylesheet" href="css/blocks.css?v=1">
   <link rel="stylesheet" href="css/home.css?v=1">
+  <link rel="stylesheet" href="css/ny.css?v=1">
+  <script src="js/ny.js?v=1"></script>
   <script defer src="js/products-data.js?v=1"></script>
   <script defer src="js/store.js?v=1"></script>
   <script defer src="js/ui.js?v=1"></script>
@@ -102,13 +104,15 @@
           <img class="hero__bottle hero__bottle--active" src="img/gen/cut-sigarets.webp" alt="Флакон Sigarets and love" width="751" height="1200" fetchpriority="high">
         </div>
       </div>
-      <img class="hero__clouds" src="img/gen/clouds.webp" alt="" width="1536" height="955">
+      <img class="hero__clouds" src="img/gen/clouds.webp" alt="" width="2880" height="1232">
+      <button class="icon-button hero__arrow hero__arrow--prev" type="button" data-hero-step="-1" aria-label="Предыдущий аромат">
+        <svg class="icon" aria-hidden="true"><use href="#arrow-left"></use></svg>
+      </button>
+      <button class="icon-button hero__arrow hero__arrow--next" type="button" data-hero-step="1" aria-label="Следующий аромат">
+        <svg class="icon" aria-hidden="true"><use href="#arrow-right"></use></svg>
+      </button>
       <div class="hero__fade" aria-hidden="true"></div>
       <div class="container hero__content">
-        <ul class="hero__facts">
-          <li class="hero__fact"><span class="hero__fact-value">85</span><span>ароматов</span></li>
-          <li class="hero__fact hero__fact--end"><span class="hero__fact-value">10 и 50</span><span>миллилитров</span></li>
-        </ul>
         <div class="hero__bottom">
           <div class="hero__intro">
             <h1 class="title hero__title">Ароматы по формулам ушедших брендов</h1>
@@ -213,18 +217,20 @@
         </div>
         <div class="stores">
           <div class="stores__media" data-reveal="0">
-            <img class="stores__image" src="img/gen/store.webp" alt="Стенд Parf Bazar в торговом центре" width="1536" height="1024" loading="lazy">
+            <div class="stores__map" data-map></div>
           </div>
           <ul class="stores__list">
             <li class="stores__item" data-reveal="1">
               <h3 class="title title--size_h3">Санкт-Петербург</h3>
               <p>ТЦ «Европолис», метро Лесная, 1&nbsp;этаж, напротив BeFree</p>
               <p class="muted">Ежедневно с 10:00 до 22:00</p>
+              <button class="link stores__show" type="button" data-map-store="0">Показать на карте</button>
             </li>
             <li class="stores__item" data-reveal="2">
               <h3 class="title title--size_h3">Великий Новгород</h3>
               <p>ТЦ «Волна», 1&nbsp;этаж, рядом с Рив Гош</p>
               <p class="muted">Ежедневно с 11:00 до 20:00</p>
+              <button class="link stores__show" type="button" data-map-store="1">Показать на карте</button>
             </li>
           </ul>
         </div>

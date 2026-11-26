@@ -11,6 +11,7 @@
     const done = document.querySelector('[data-order-done]');
     const empty = document.querySelector('[data-order-empty]');
     const address = document.querySelector('[data-address]');
+    const submit = document.querySelector('[data-submit]');
     let ordered = false;
 
     function delivery() {
@@ -27,7 +28,10 @@
       const hasItems = store.count() > 0;
       checkout.hidden = !hasItems;
       empty.hidden = hasItems;
-      if (hasItems) summary.innerHTML = orderHtml();
+      if (!hasItems) return;
+      summary.innerHTML = orderHtml();
+      // Итог повторён на кнопке: на телефоне состав заказа к этому моменту уже ушёл вверх за экран.
+      submit.textContent = `Оформить заказ · ${PB.money(store.totals().total + delivery().value)}`;
     }
 
     function syncAddress() {
