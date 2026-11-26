@@ -5,9 +5,8 @@
   const PAGE_SIZE = 24;
   const SWIPE_CLOSE = 60;
   const PRICE_STEP = 50;
-  const NOTES_SHOWN = 12;
-  const NOTE_MIN_COUNT = 3;
   const QUERY_MAX = 60;
+  const BAR_THRESHOLD = 6;
   const VOLUMES = [50, 10];
   const narrow = matchMedia('(max-width: 1024px)');
 
@@ -16,6 +15,7 @@
     { id: 'hits', label: 'Хиты', test: (product) => product.sections.includes('Хиты') },
     { id: 'winter', label: 'Зимняя коллекция', test: (product) => product.sections.includes('Зимняя коллекция') },
     { id: 'men', label: 'Мужские', test: (product) => product.sections.includes('Мужские') },
+    { id: 'unisex', label: 'Унисекс', test: (product) => product.traits['Кому подойдут'] === 'Унисекс' },
     { id: 'fav', label: 'Избранное', test: (product) => store.isFav(product.slug) },
   ];
 
@@ -23,17 +23,6 @@
     { id: 'daily', label: 'На каждый день', prefix: 'На работу' },
     { id: 'date', label: 'На свидание', prefix: 'На свидание' },
   ];
-
-  // В фильтр идут самые частые ноты: редкая нота дала бы один-два аромата и только загромождала список.
-  const NOTES = (() => {
-    const counts = new Map();
-    store.products.forEach((product) => product.noteTags.forEach((tag) => counts.set(tag, (counts.get(tag) || 0) + 1)));
-    return [...counts]
-      .filter(([, count]) => count >= NOTE_MIN_COUNT)
-      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
-      .slice(0, NOTES_SHOWN)
-      .map(([id, count]) => ({ id, count }));
-  })();
 
   const price = (product, ml) => store.volume(product, ml).price;
   const SORTS = {
@@ -80,7 +69,7 @@
     return {
       filter: SECTIONS.some((item) => item.id === filter) ? filter : 'all',
       moods,
-      notes: listParam(params.get('notes'), NOTES.map((note) => note.id)),
+      notes: listParam(params.get('notes'), PB.notes.map((note) => note.id)),
       occasion: listParam(params.get('occasion'), OCCASIONS.map((item) => item.id)),
       ml,
       min,
@@ -132,7 +121,7 @@
       </fieldset>
       ${groupHtml('Характер', PB.moods.map((mood) => optionHtml('moods', mood.id, mood.many)).join(''))}
       ${groupHtml('Повод', OCCASIONS.map((item) => optionHtml('occasion', item.id, item.label)).join(''))}
-      ${groupHtml('Ноты', NOTES.map((note) => optionHtml('notes', note.id, note.id, note.count)).join(''))}
+      ${groupHtml('Ноты', PB.notes.map((note) => optionHtml('notes', note.id, note.id, note.count)).join(''))}
     </div>`;
   }
 
@@ -349,6 +338,8 @@
 
     narrow.addEventListener('change', place);
     initSelect(select, state.sort, (sort) => update({ sort }));
+    initBar(document.querySelector('[data-catalog-bar]'), document.querySelector('.catalog__head'),
+      () => select.classList.contains('select--open') || dialog.open);
     place();
     render();
 
@@ -357,10 +348,42 @@
     if (siteSearch && new URLSearchParams(location.search).get('focus') === 'search') siteSearch.focus();
   }
 
+  /* Липкая полоса на узком экране: при прокрутке вниз уезжает под шапку, при движении вверх возвращается.
+     Порог в несколько пикселей гасит дрожание от инерции пальца. */
+  function initBar(bar, head, isPinned) {
+    let lastY = scrollY;
+    let queued = false;
+
+    function update() {
+      queued = false;
+      const y = scrollY;
+      // Пока полоса не прилипла, над ней заголовок: спрятанная, она наехала бы на него.
+      const stuck = head.getBoundingClientRect().bottom < parseFloat(getComputedStyle(bar).top);
+      if (!narrow.matches || !stuck || isPinned()) {
+        bar.classList.remove('catalog__top--hidden');
+        lastY = y;
+        return;
+      }
+      if (Math.abs(y - lastY) < BAR_THRESHOLD) return;
+      bar.classList.toggle('catalog__top--hidden', y > lastY);
+      lastY = y;
+    }
+
+    addEventListener('scroll', () => {
+      if (queued) return;
+      queued = true;
+      requestAnimationFrame(update);
+    }, { passive: true });
+
+    // Переход с клавиатуры в спрятанную полосу должен её показать.
+    bar.addEventListener('focusin', () => bar.classList.remove('catalog__top--hidden'));
+  }
+
   /* Список сортировки: под кнопкой на компьютере, листом снизу на телефоне. */
   function initSelect(select, value, onChange) {
     const button = select.querySelector('[data-select-button]');
     const label = select.querySelector('[data-select-label]');
+    const short = select.querySelector('[data-select-short]');
     const panel = select.querySelector('.select__panel');
     const handle = select.querySelector('[data-select-handle]');
     const options = [...select.querySelectorAll('[data-value]')];
@@ -370,7 +393,9 @@
         const active = option.dataset.value === current;
         option.classList.toggle('select__option--active', active);
         option.setAttribute('aria-selected', active);
-        if (active) label.textContent = option.textContent;
+        if (!active) return;
+        label.textContent = option.textContent;
+        short.textContent = option.dataset.short;
       });
     }
 

@@ -1,4 +1,7 @@
-.catalog__title {
+.catalog__head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-m);
   margin-bottom: var(--space-l);
 }
 
@@ -63,6 +66,12 @@
   margin-left: auto;
 }
 
+/* На компьютере сортировка текстом с полной подписью, иконка и короткая подпись нужны только узкому экрану. */
+.catalog__sort-icon,
+.catalog__sort-short {
+  display: none;
+}
+
 .catalog__status {
   display: flex;
   flex-wrap: wrap;
@@ -95,7 +104,9 @@
 
 .catalog__count {
   display: none;
+  color: var(--color-muted);
   font-size: var(--fs-small);
+  white-space: nowrap;
 }
 
 .catalog__grid {
@@ -431,21 +442,40 @@
   }
 }
 
-/* Панель с кнопкой фильтра и сортировкой прилипает под шапкой, пока листается сетка. */
+/* Узкий экран: компактный заголовок со счётчиком и липкая полоса «разделы + фильтр + сортировка». */
 @media (max-width: 1024px) {
+  .catalog-page {
+    padding-top: var(--space-m);
+  }
+
+  .catalog__head {
+    margin-bottom: 0;
+  }
+
+  .catalog__title {
+    font-size: 40px;
+  }
+
   .catalog__aside {
     display: none;
   }
 
+  /* Шапка непрозрачная и выше по слою, поэтому спрятанная полоса уходит под неё.
+     Сдвиг с запасом на высоту шапки: полоса скрыта при любой её высоте. */
   .catalog__top {
     position: sticky;
     top: calc(var(--header-height) + var(--header-search-height, 0px));
     z-index: 10;
     flex-wrap: wrap;
-    gap: var(--space-s) var(--space-m);
+    gap: var(--space-s);
     margin-inline: calc(-1 * var(--gutter));
     padding: var(--space-s) var(--gutter);
     background: var(--color-paper);
+    transition: transform 0.3s var(--ease-out);
+  }
+
+  .catalog__top--hidden {
+    transform: translateY(calc(-100% - var(--header-height) - var(--header-search-height, 0px)));
   }
 
   /* Липкая панель создаёт свой слой: без подъёма лист сортировки и его подложка уходят под шапку. */
@@ -453,28 +483,78 @@
     z-index: var(--z-toast);
   }
 
+  /* Ширина с учётом отрицательных полей: иначе на планшете лента умещается в одну строку с кнопками. */
   .catalog__chips {
     order: 1;
-    flex-basis: 100%;
+    flex: 0 0 calc(100% + 2 * var(--gutter));
     margin-inline: calc(-1 * var(--gutter));
     padding-inline: var(--gutter);
   }
 
   .catalog__filter-open {
     display: inline-flex;
+    flex: 1 1 0;
+    order: 2;
+    min-width: 0;
+  }
+
+  .catalog__sort {
+    flex: 1 1 0;
+    order: 3;
+    min-width: 0;
+    margin-left: 0;
+  }
+
+  /* Сортировка выглядит так же, как соседняя кнопка фильтра. */
+  .catalog__sort-button {
+    justify-content: center;
+    width: 100%;
+    padding: 0 var(--space-m);
+    border: 1px solid var(--color-ink);
+    border-radius: var(--radius-s);
+    font-size: var(--fs-small);
+    font-weight: 500;
+    transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+  }
+
+  .catalog__sort-icon {
+    display: block;
+  }
+
+  .catalog__sort-short {
+    display: inline;
+  }
+
+  .catalog__sort-full,
+  .catalog__sort-arrow {
+    display: none;
   }
 
   .catalog__count {
     display: block;
+  }
+
+  .catalog__status {
+    margin-block: 0 var(--space-m);
+  }
+}
+
+@media (max-width: 1024px) and (hover: hover) {
+  .catalog__sort-button:hover {
+    border-color: var(--color-wood);
+    background: var(--color-wood);
+    color: var(--color-paper);
+  }
+}
+
+@media (max-width: 1024px) and (prefers-reduced-motion: reduce) {
+  .catalog__top {
+    transition: none;
   }
 }
 
 @media (max-width: 768px) {
   .catalog__grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .catalog__status {
-    margin-block: var(--space-s) var(--space-m);
   }
 }
