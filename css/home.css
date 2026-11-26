@@ -1,0 +1,525 @@
+/* Первый экран */
+
+.hero {
+  position: relative;
+  display: flex;
+  min-height: min(100svh - var(--header-height) - 34px, 920px);
+  overflow: hidden;
+  background: var(--color-tile);
+}
+
+.hero__media {
+  position: absolute;
+  inset: 0;
+  transform: translate3d(0, calc(var(--hero-shift, 0) * 0.28px), 0);
+}
+
+.hero__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 78% 50%;
+  animation: hero-zoom 2.6s var(--ease-out) both;
+}
+
+/* Пятно тёплого света медленно ходит по стене, как солнце из окна. */
+.hero__light {
+  position: absolute;
+  inset: -20%;
+  background: radial-gradient(42% 38% at 30% 36%, rgba(255, 244, 214, 0.6), transparent 70%);
+  mix-blend-mode: soft-light;
+  animation: hero-light 14s ease-in-out infinite alternate;
+}
+
+.hero__content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-xl);
+  padding-block: var(--space-2xl);
+  opacity: var(--hero-fade, 1);
+  transform: translate3d(0, calc(var(--hero-shift, 0) * -0.1px), 0);
+}
+
+.hero__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-l);
+  max-width: 58%;
+}
+
+.hero__line {
+  display: block;
+  overflow: hidden;
+  padding-top: 0.04em;
+}
+
+.hero__word {
+  display: block;
+  animation: hero-rise 1.1s var(--ease-out) both;
+}
+
+.hero__line:nth-child(2) .hero__word {
+  animation-delay: 0.1s;
+}
+
+.hero__line:nth-child(3) .hero__word {
+  animation-delay: 0.2s;
+}
+
+.hero__lead {
+  max-width: 20em;
+  animation: hero-fade-up 0.9s var(--ease-out) 0.55s both;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-m);
+  animation: hero-fade-up 0.9s var(--ease-out) 0.7s both;
+}
+
+.hero__quiz {
+  background: var(--color-paper);
+}
+
+@keyframes hero-zoom {
+  from {
+    transform: scale(1.12);
+  }
+}
+
+@keyframes hero-light {
+  to {
+    transform: translate(9%, 6%);
+    opacity: 0.55;
+  }
+}
+
+@keyframes hero-rise {
+  from {
+    transform: translateY(108%);
+  }
+}
+
+@keyframes hero-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    --fs-hero: clamp(72px, 23vw, 150px);
+    min-height: calc(100svh - var(--header-height) - 34px);
+  }
+
+  .hero__image {
+    object-position: 50% 100%;
+  }
+
+  .hero__content {
+    justify-content: space-between;
+    padding-block: var(--space-l);
+  }
+
+  .hero__text {
+    gap: var(--space-m);
+    max-width: none;
+  }
+
+  .hero__actions {
+    flex-wrap: nowrap;
+    gap: var(--space-s);
+  }
+
+  .hero__actions .button {
+    flex: 1 1 0;
+    padding: 0 var(--space-s);
+    font-size: var(--fs-small);
+  }
+
+}
+
+@media (max-width: 340px) {
+  .hero__actions {
+    flex-direction: column;
+  }
+
+  .hero__actions .button {
+    flex: 0 0 auto;
+  }
+}
+
+/* Лента нот под первым экраном */
+
+.notes-line {
+  overflow: hidden;
+  padding-block: var(--space-l);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.notes-line__track {
+  display: flex;
+  width: max-content;
+  animation: ticker-run 70s linear infinite;
+}
+
+.notes-line__word {
+  display: flex;
+  align-items: center;
+  font-family: var(--font-display);
+  font-size: clamp(56px, 8vw, 128px);
+  font-weight: 800;
+  line-height: 1;
+  color: var(--color-line);
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.notes-line__word::after {
+  content: "";
+  width: 0.14em;
+  height: 0.14em;
+  margin-inline: 0.35em;
+  border-radius: 50%;
+  background: var(--color-wood);
+}
+
+/* Сет «три по 10 мл» */
+
+.set {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xl) var(--space-2xl);
+}
+
+.set__media {
+  flex: 1 1 480px;
+  overflow: hidden;
+  border-radius: var(--radius-m);
+}
+
+.set__image {
+  width: 100%;
+}
+
+.set__content {
+  flex: 1 1 400px;
+  min-width: 0;
+}
+
+.set__price {
+  margin-top: var(--space-m);
+}
+
+.set__slots {
+  display: flex;
+  gap: var(--space-m);
+  margin-block: var(--space-l);
+}
+
+.slot {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  aspect-ratio: 3 / 4;
+  border: 1px dashed var(--color-wood);
+  border-radius: var(--radius-m);
+  color: var(--color-wood);
+  transition: border-color var(--transition), background-color var(--transition);
+}
+
+.slot--filled {
+  border-color: var(--color-tile);
+  border-style: solid;
+  background: var(--color-tile);
+  color: var(--color-ink);
+}
+
+.slot__pick {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-s);
+  width: 100%;
+  height: 100%;
+  padding: var(--space-s);
+  font-size: var(--fs-small);
+}
+
+.slot__image {
+  flex: 1 1 0;
+  width: 100%;
+  min-height: 0;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  animation: slot-drop 0.6s var(--ease-out);
+}
+
+.slot__label {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.slot--filled .slot__label {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.slot__remove {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+@keyframes slot-drop {
+  from {
+    opacity: 0;
+    transform: translateY(-40%) rotate(-8deg);
+  }
+}
+
+@media (hover: hover) {
+  .slot:not(.slot--filled):hover {
+    background: var(--color-tile);
+  }
+}
+
+@media (max-width: 480px) {
+  .set__slots {
+    gap: var(--space-s);
+  }
+
+  .slot--filled .slot__label {
+    font-size: 16px;
+  }
+}
+
+/* Характеры аромата */
+
+.moods {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-l);
+}
+
+.mood {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+}
+
+.mood__media {
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: var(--radius-m);
+}
+
+.mood__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s var(--ease-out);
+}
+
+.mood__label {
+  transition: color var(--transition);
+}
+
+@media (hover: hover) {
+  .mood:hover .mood__image {
+    transform: scale(1.05);
+  }
+
+  .mood:hover .mood__label {
+    color: var(--color-wood);
+  }
+}
+
+@media (max-width: 768px) {
+  .moods {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-l) var(--space-m);
+  }
+
+  .mood {
+    gap: var(--space-s);
+  }
+}
+
+/* Истории ароматов */
+
+.stories {
+  background: var(--color-wood-dark);
+  color: var(--color-paper);
+}
+
+.stories__nav {
+  display: flex;
+  gap: var(--space-s);
+}
+
+.stories__arrow {
+  border: 1px solid rgba(243, 238, 229, 0.4);
+}
+
+.stories__rail {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.stories__rail::-webkit-scrollbar {
+  display: none;
+}
+
+.story {
+  display: flex;
+  flex: 0 0 100%;
+  align-items: center;
+  gap: var(--space-2xl);
+  min-width: 0;
+  scroll-snap-align: start;
+}
+
+.story__media {
+  flex: 0 0 32%;
+  aspect-ratio: 4 / 5;
+}
+
+.story__body {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-l);
+  min-width: 0;
+}
+
+.story__quote {
+  font-family: var(--font-serif);
+  font-size: clamp(22px, 2.5vw, 40px);
+  font-style: italic;
+  line-height: 1.3;
+}
+
+.story__notes {
+  opacity: 0.7;
+}
+
+@media (hover: hover) {
+  .stories__arrow:hover {
+    border-color: var(--color-paper);
+    background: var(--color-paper);
+    color: var(--color-ink);
+  }
+}
+
+@media (max-width: 768px) {
+  .story {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-l);
+  }
+
+  .story__media {
+    flex: 0 0 auto;
+    width: 56%;
+  }
+
+  .story__body {
+    flex: 0 0 auto;
+    gap: var(--space-m);
+  }
+}
+
+/* О формулах */
+
+.about {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-xl) var(--space-2xl);
+}
+
+.about__content {
+  flex: 1 1 420px;
+  min-width: 0;
+}
+
+.about__text {
+  max-width: 30em;
+  margin-top: var(--space-l);
+  font-size: 18px;
+}
+
+.about__button {
+  margin-top: var(--space-l);
+}
+
+.about__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-l) var(--space-xl);
+  margin-top: var(--space-xl);
+  padding-top: var(--space-l);
+  border-top: 1px solid var(--color-line);
+}
+
+.about__fact {
+  display: flex;
+  flex-direction: column;
+}
+
+.about__media {
+  flex: 1 1 480px;
+  overflow: hidden;
+  border-radius: var(--radius-m);
+}
+
+.about__image {
+  width: 100%;
+}
+
+/* Магазины */
+
+.stores {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xl) var(--space-2xl);
+}
+
+.stores__media {
+  flex: 3 1 480px;
+  overflow: hidden;
+  border-radius: var(--radius-m);
+}
+
+.stores__image {
+  width: 100%;
+}
+
+.stores__list {
+  display: flex;
+  flex: 2 1 300px;
+  flex-direction: column;
+}
+
+.stores__item {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+  padding-block: var(--space-l);
+  border-top: 1px solid var(--color-line);
+}

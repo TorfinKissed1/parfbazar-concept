@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Parf Bazar: ароматы по формулам ушедших брендов</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600&family=Sofia+Sans+Extra+Condensed:wght@600;800&family=Spectral:ital@0;1&display=swap">
+  <link rel="stylesheet" href="css/base.css?v=1">
+  <link rel="stylesheet" href="css/chrome.css?v=1">
+  <link rel="stylesheet" href="css/card.css?v=1">
+  <link rel="stylesheet" href="css/blocks.css?v=1">
+  <link rel="stylesheet" href="css/home.css?v=1">
+  <script defer src="js/products-data.js?v=1"></script>
+  <script defer src="js/store.js?v=1"></script>
+  <script defer src="js/ui.js?v=1"></script>
+  <script defer src="js/forms.js?v=1"></script>
+  <script defer src="js/quiz.js?v=1"></script>
+  <script defer src="js/home.js?v=1"></script>
+</head>
+<body>
+  <a class="ticker" href="index.html#set" aria-label="Три аромата по 10 мл за 3 700 ₽">
+    <span class="ticker__track" aria-hidden="true">
+      <span class="ticker__item">3 по 10 мл за 3 700 ₽</span><span class="ticker__item">Собери свой сет</span>
+      <span class="ticker__item">3 по 10 мл за 3 700 ₽</span><span class="ticker__item">Собери свой сет</span>
+      <span class="ticker__item">3 по 10 мл за 3 700 ₽</span><span class="ticker__item">Собери свой сет</span>
+      <span class="ticker__item">3 по 10 мл за 3 700 ₽</span><span class="ticker__item">Собери свой сет</span>
+      <span class="ticker__item">3 по 10 мл за 3 700 ₽</span><span class="ticker__item">Собери свой сет</span>
+      <span class="ticker__item">3 по 10 мл за 3 700 ₽</span><span class="ticker__item">Собери свой сет</span>
+      <span class="ticker__item">3 по 10 мл за 3 700 ₽</span><span class="ticker__item">Собери свой сет</span>
+      <span class="ticker__item">3 по 10 мл за 3 700 ₽</span><span class="ticker__item">Собери свой сет</span>
+    </span>
+  </a>
+
+  <header class="header">
+    <div class="container header__inner">
+      <button class="icon-button header__burger" type="button" data-open="menu" aria-label="Меню">
+        <svg class="icon" aria-hidden="true"><use href="img/icons.svg#menu"></use></svg>
+      </button>
+      <nav class="header__nav" aria-label="Основное меню">
+        <a class="header__link" href="catalog.html">Каталог</a>
+        <a class="header__link" href="index.html#set">Собрать сет</a>
+        <button class="header__link" type="button" data-open="quiz">Подбор аромата</button>
+        <a class="header__link" href="index.html#stores">Магазины</a>
+      </nav>
+      <a class="logo header__logo" href="index.html">Parf Bazar</a>
+      <div class="header__actions">
+        <a class="icon-button" href="catalog.html?fav=1" aria-label="Избранное">
+          <svg class="icon" aria-hidden="true"><use href="img/icons.svg#heart"></use></svg>
+          <span class="icon-button__count" data-fav-count hidden>0</span>
+        </a>
+        <button class="icon-button" type="button" data-open="cart" aria-label="Корзина">
+          <svg class="icon" aria-hidden="true"><use href="img/icons.svg#bag"></use></svg>
+          <span class="icon-button__count" data-cart-count hidden>0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero" data-hero>
+      <picture class="hero__media">
+        <source media="(max-width: 768px)" srcset="img/gen/hero-mobile.webp" width="733" height="1100">
+        <img class="hero__image" src="img/gen/hero.webp" alt="Флакон Parf Bazar на деревянной подставке" width="1536" height="1024" fetchpriority="high">
+      </picture>
+      <div class="hero__light" aria-hidden="true"></div>
+      <div class="container hero__content">
+        <div class="hero__text">
+          <h1 class="title title--size_hero hero__title">
+            <span class="hero__line"><span class="hero__word">Ароматы</span></span>
+            <span class="hero__line"><span class="hero__word">ушедших</span></span>
+            <span class="hero__line"><span class="hero__word">брендов</span></span>
+          </h1>
+          <p class="lead hero__lead">85 ароматов по знакомым формулам, во флаконах 10 и 50 мл</p>
+        </div>
+        <div class="hero__actions">
+          <a class="button" href="catalog.html">Выбрать аромат</a>
+          <button class="button button--ghost hero__quiz" type="button" data-open="quiz">Подобрать за минуту</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="notes-line" aria-hidden="true">
+      <div class="notes-line__track">
+        <span class="notes-line__word">Ваниль</span><span class="notes-line__word">Табак</span><span class="notes-line__word">Бобы тонка</span><span class="notes-line__word">Шафран</span><span class="notes-line__word">Можжевельник</span><span class="notes-line__word">Орхидея</span><span class="notes-line__word">Кожа</span><span class="notes-line__word">Сирень</span>
+        <span class="notes-line__word">Ваниль</span><span class="notes-line__word">Табак</span><span class="notes-line__word">Бобы тонка</span><span class="notes-line__word">Шафран</span><span class="notes-line__word">Можжевельник</span><span class="notes-line__word">Орхидея</span><span class="notes-line__word">Кожа</span><span class="notes-line__word">Сирень</span>
+      </div>
+    </div>
+
+    <section class="section" id="hits">
+      <div class="container">
+        <div class="section__head">
+          <h2 class="title title--size_h2" data-reveal="0">Хиты</h2>
+          <a class="link section__more" href="catalog.html">Все ароматы</a>
+        </div>
+        <div class="rail" data-hits></div>
+        <a class="button button--ghost button--wide section__all" href="catalog.html">Все ароматы</a>
+      </div>
+    </section>
+
+    <section class="section section--surface" id="set">
+      <div class="container set">
+        <div class="set__media" data-reveal="0">
+          <img class="set__image" src="img/gen/set.webp" alt="Три флакона по 10 мл в коробке" width="1536" height="1024" loading="lazy">
+        </div>
+        <div class="set__content" data-reveal="1">
+          <h2 class="title title--size_h2">Три аромата по 10&nbsp;мл</h2>
+          <p class="price price--size_l set__price">3 700&nbsp;₽ <span class="price__old">5 070&nbsp;₽</span></p>
+          <ul class="set__slots" data-set-slots></ul>
+          <button class="button button--wide" type="button" data-set-add disabled>Выберите три аромата</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="moods">
+      <div class="container">
+        <div class="section__head">
+          <h2 class="title title--size_h2" data-reveal="0">Какой аромат ваш</h2>
+          <button class="link section__more" type="button" data-open="quiz">Подобрать аромат</button>
+        </div>
+        <div class="moods" data-moods></div>
+        <button class="button button--ghost button--wide section__all" type="button" data-open="quiz">Подобрать аромат</button>
+      </div>
+    </section>
+
+    <section class="section stories" id="stories">
+      <div class="container">
+        <div class="section__head">
+          <h2 class="title title--size_h2" data-reveal="0">Истории ароматов</h2>
+          <div class="stories__nav">
+            <button class="icon-button stories__arrow" type="button" data-stories-prev aria-label="Предыдущая история">
+              <svg class="icon" aria-hidden="true"><use href="img/icons.svg#arrow-left"></use></svg>
+            </button>
+            <button class="icon-button stories__arrow" type="button" data-stories-next aria-label="Следующая история">
+              <svg class="icon" aria-hidden="true"><use href="img/icons.svg#arrow-right"></use></svg>
+            </button>
+          </div>
+        </div>
+        <div class="stories__rail" data-stories></div>
+      </div>
+    </section>
+
+    <section class="section" id="about">
+      <div class="container about">
+        <div class="about__content" data-reveal="0">
+          <h2 class="title title--size_h2">По формулам ушедших брендов</h2>
+          <p class="about__text">У каждого аромата указано направление: композиция, на которую он похож. Знакомый запах легко найти по названию.</p>
+          <a class="button about__button" href="catalog.html?focus=search">Найти свой аромат</a>
+          <ul class="about__facts">
+            <li class="about__fact"><span class="title title--size_h2">85</span><span class="muted">ароматов</span></li>
+            <li class="about__fact"><span class="title title--size_h2">10 и 50</span><span class="muted">миллилитров</span></li>
+            <li class="about__fact"><span class="title title--size_h2">2</span><span class="muted">магазина</span></li>
+          </ul>
+        </div>
+        <div class="about__media" data-reveal="1">
+          <img class="about__image" src="img/gen/lab.webp" alt="Парфюмер набирает аромат пипеткой" width="1536" height="1024" loading="lazy">
+        </div>
+      </div>
+    </section>
+
+    <section class="section section--surface" id="stores">
+      <div class="container">
+        <div class="section__head">
+          <h2 class="title title--size_h2" data-reveal="0">Магазины</h2>
+        </div>
+        <div class="stores">
+          <div class="stores__media" data-reveal="0">
+            <img class="stores__image" src="img/gen/store.webp" alt="Стенд Parf Bazar в торговом центре" width="1536" height="1024" loading="lazy">
+          </div>
+          <ul class="stores__list">
+            <li class="stores__item" data-reveal="1">
+              <h3 class="title title--size_h3">Санкт-Петербург</h3>
+              <p>ТЦ «Европолис», метро Лесная, 1&nbsp;этаж, напротив BeFree</p>
+              <p class="muted">Ежедневно с 10:00 до 22:00</p>
+            </li>
+            <li class="stores__item" data-reveal="2">
+              <h3 class="title title--size_h3">Великий Новгород</h3>
+              <p>ТЦ «Волна», 1&nbsp;этаж, рядом с Рив Гош</p>
+              <p class="muted">Ежедневно с 11:00 до 20:00</p>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__top">
+        <div class="footer__brand"><a class="logo footer__logo" href="index.html">Parf Bazar</a></div>
+        <div class="footer__column">
+          <h2 class="footer__heading">Покупателям</h2>
+          <a class="footer__link" href="catalog.html">Каталог</a>
+          <a class="footer__link" href="index.html#set">Собрать сет</a>
+          <a class="footer__link" href="index.html#stores">Магазины</a>
+        </div>
+        <div class="footer__column">
+          <h2 class="footer__heading">Контакты</h2>
+          <a class="footer__link" href="tel:+79150801691">+7 915 080-16-91</a>
+          <a class="footer__link" href="mailto:efemerclub@gmail.com">efemerclub@gmail.com</a>
+          <a class="footer__link" href="https://t.me/parfbazar" target="_blank" rel="noopener">Telegram</a>
+          <a class="footer__link" href="https://vk.com/parf_bazar" target="_blank" rel="noopener">ВКонтакте</a>
+        </div>
+        <div class="footer__column">
+          <h2 class="footer__heading">Магазины</h2>
+          <p>Санкт-Петербург, ТЦ «Европолис»</p>
+          <p class="footer__note">10:00–22:00</p>
+          <p>Великий Новгород, ТЦ «Волна»</p>
+          <p class="footer__note">11:00–20:00</p>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <span>ИП Киричева Е.И.</span>
+        <span>ОГРНИП 323530000011140, ИНН 519036821960</span>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

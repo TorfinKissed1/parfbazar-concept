@@ -1,0 +1,551 @@
+/* Брейкпоинты проекта: 1440, 1240, 1024, 768, 480, 340. Мобильная схема до 768 включительно. */
+
+:root {
+  --color-paper: #f3eee5;
+  --color-surface: #fbf8f3;
+  --color-tile: #ebe4d8;
+  --color-ink: #1e1a16;
+  --color-muted: #6b6157;
+  --color-line: #dcd3c5;
+  --color-wood: #7b4b2a;
+  --color-wood-dark: #5e3820;
+  --color-error: #a8321e;
+  --color-backdrop: rgba(30, 26, 22, 0.45);
+
+  --font-display: "Sofia Sans Extra Condensed", "Arial Narrow", sans-serif;
+  --font-serif: "Spectral", Georgia, serif;
+  --font-main: "Golos Text", system-ui, sans-serif;
+
+  --fs-hero: clamp(64px, 10.5vw, 176px);
+  --fs-h1: clamp(48px, 6vw, 96px);
+  --fs-h2: clamp(40px, 4.6vw, 72px);
+  --fs-h3: 30px;
+  --fs-lead: clamp(19px, 1.6vw, 24px);
+  --fs-body: 16px;
+  --fs-small: 14px;
+  --fs-caption: 13px;
+
+  --space-xs: 4px;
+  --space-s: 8px;
+  --space-m: 16px;
+  --space-l: 24px;
+  --space-xl: 40px;
+  --space-2xl: 64px;
+  --space-section: clamp(64px, 9vw, 136px);
+
+  --radius-s: 4px;
+  --radius-m: 8px;
+  --container: 1400px;
+  --gutter: clamp(16px, 3vw, 40px);
+  --header-height: 68px;
+  --control-height: 52px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --transition: 0.3s ease;
+
+  --z-header: 20;
+  --z-bar: 30;
+  --z-toast: 60;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-height) + var(--space-l));
+  scrollbar-width: none;
+  -webkit-text-size-adjust: 100%;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+}
+
+body {
+  margin: 0;
+  background: var(--color-paper);
+  color: var(--color-ink);
+  font-family: var(--font-main);
+  font-size: var(--fs-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+h1,
+h2,
+h3,
+p,
+ul,
+ol,
+figure,
+fieldset,
+legend {
+  margin: 0;
+  padding: 0;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+fieldset {
+  border: 0;
+  min-width: 0;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+button {
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-wood);
+  outline-offset: 3px;
+}
+
+input:focus-visible,
+textarea:focus-visible {
+  outline: none;
+}
+
+input[type="search"]::-webkit-search-cancel-button {
+  -webkit-appearance: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Плавная смена страниц и перелёт фото товара из карточки на страницу товара. */
+@view-transition {
+  navigation: auto;
+}
+
+::view-transition-group(product-image) {
+  animation-duration: 0.5s;
+  animation-timing-function: var(--ease-out);
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.container {
+  width: 100%;
+  max-width: var(--container);
+  margin: 0 auto;
+  padding: 0 var(--gutter);
+}
+
+.section {
+  padding-block: var(--space-section);
+}
+
+.section--tight {
+  padding-block: calc(var(--space-section) / 2);
+}
+
+.section--surface {
+  background: var(--color-surface);
+}
+
+.section__head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-l);
+  margin-bottom: var(--space-xl);
+}
+
+/* Типографика */
+
+.title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 0.92;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.title--size_hero {
+  font-size: var(--fs-hero);
+  line-height: 0.86;
+}
+
+.title--size_h1 {
+  font-size: var(--fs-h1);
+}
+
+.title--size_h2 {
+  font-size: var(--fs-h2);
+}
+
+.title--size_h3 {
+  font-size: var(--fs-h3);
+  line-height: 1;
+}
+
+.lead {
+  font-family: var(--font-serif);
+  font-size: var(--fs-lead);
+  font-style: italic;
+  line-height: 1.35;
+  text-wrap: balance;
+}
+
+.muted {
+  color: var(--color-muted);
+}
+
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-s);
+  padding-block: var(--space-xs);
+  border-bottom: 1px solid currentColor;
+  font-weight: 500;
+  transition: color var(--transition);
+}
+
+@media (hover: hover) {
+  .link:hover {
+    color: var(--color-wood);
+  }
+}
+
+.icon {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.icon--size_s {
+  width: 18px;
+  height: 18px;
+}
+
+/* Кнопки */
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-s);
+  min-height: var(--control-height);
+  padding: 0 var(--space-l);
+  border: 1px solid var(--color-ink);
+  border-radius: var(--radius-s);
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-weight: 500;
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+  transition: background-color var(--transition), border-color var(--transition), color var(--transition), opacity var(--transition);
+}
+
+.button--ghost {
+  background: transparent;
+  color: var(--color-ink);
+}
+
+.button--light {
+  border-color: var(--color-paper);
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+.button--size_s {
+  min-height: 44px;
+  padding: 0 var(--space-m);
+  font-size: var(--fs-small);
+}
+
+.button--wide {
+  width: 100%;
+}
+
+.button--done {
+  border-color: var(--color-wood);
+  background: var(--color-wood);
+  color: var(--color-paper);
+}
+
+.button:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+@media (hover: hover) {
+  .button:not(:disabled):hover {
+    border-color: var(--color-wood);
+    background: var(--color-wood);
+    color: var(--color-paper);
+  }
+}
+
+.icon-button {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  transition: color var(--transition), background-color var(--transition);
+}
+
+.icon-button__count {
+  position: absolute;
+  top: 2px;
+  right: 0;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--color-wood);
+  color: var(--color-paper);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 18px;
+  text-align: center;
+}
+
+.icon-button__count--bump {
+  animation: count-bump 0.4s var(--ease-out);
+}
+
+@keyframes count-bump {
+  40% {
+    transform: scale(1.45);
+  }
+}
+
+@media (hover: hover) {
+  .icon-button:hover {
+    color: var(--color-wood);
+  }
+}
+
+/* Сердечко избранного */
+
+.like {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  color: var(--color-ink);
+  transition: color var(--transition);
+}
+
+.like__icon {
+  transition: fill var(--transition), transform 0.3s var(--ease-out);
+}
+
+.like--active {
+  color: var(--color-wood);
+}
+
+.like--active .like__icon {
+  fill: currentColor;
+  transform: scale(1.08);
+}
+
+@media (hover: hover) {
+  .like:hover {
+    color: var(--color-wood);
+  }
+}
+
+/* Поля форм */
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field__label {
+  font-size: var(--fs-small);
+  color: var(--color-muted);
+}
+
+.field__input {
+  width: 100%;
+  min-height: var(--control-height);
+  padding: 0 var(--space-m);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-s);
+  background: var(--color-surface);
+  transition: border-color var(--transition);
+}
+
+.field__input--area {
+  min-height: 96px;
+  padding-block: var(--space-m);
+  resize: vertical;
+}
+
+.field__input:focus {
+  border-color: var(--color-ink);
+}
+
+.field__error {
+  display: grid;
+  grid-template-rows: 0fr;
+  color: var(--color-error);
+  font-size: var(--fs-caption);
+  transition: grid-template-rows var(--transition);
+}
+
+.field__error-text {
+  overflow: hidden;
+}
+
+.field--error .field__input {
+  border-color: var(--color-error);
+}
+
+.field--error .field__error {
+  grid-template-rows: 1fr;
+}
+
+.check {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-s);
+  font-size: var(--fs-caption);
+  color: var(--color-muted);
+  cursor: pointer;
+}
+
+.check__input {
+  position: absolute;
+  opacity: 0;
+}
+
+.check__box {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: 1px solid var(--color-muted);
+  border-radius: var(--radius-s);
+  color: transparent;
+  transition: background-color var(--transition), border-color var(--transition), color var(--transition);
+}
+
+.check__input:checked + .check__box {
+  border-color: var(--color-ink);
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+.check__input:focus-visible + .check__box {
+  outline: 2px solid var(--color-wood);
+  outline-offset: 3px;
+}
+
+.check--error .check__box {
+  border-color: var(--color-error);
+}
+
+.check__link {
+  border-bottom: 1px solid currentColor;
+}
+
+/* Появление блоков при прокрутке: класс reveal ставит скрипт, без него всё видно сразу. */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.9s var(--ease-out), transform 0.9s var(--ease-out);
+  transition-delay: var(--reveal-delay, 0s);
+}
+
+.reveal--visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Ссылка «смотреть все»: на компьютере в заголовке секции, на телефоне кнопкой под ней. */
+
+.section__more {
+  flex-shrink: 0;
+}
+
+.section__all {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .section__head {
+    margin-bottom: var(--space-l);
+  }
+
+  .section__more {
+    display: none;
+  }
+
+  .section__all {
+    display: flex;
+    margin-top: var(--space-l);
+  }
+}

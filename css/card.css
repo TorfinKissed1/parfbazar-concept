@@ -1,0 +1,286 @@
+/* Фото флакона: в магазине оно на белом фоне, multiply сажает его на плитку цвета бумаги. */
+
+.bottle {
+  display: block;
+  overflow: hidden;
+  border-radius: var(--radius-m);
+  background: var(--color-tile);
+}
+
+.bottle__image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+
+/* Карточка товара */
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.card__media {
+  aspect-ratio: 4 / 5;
+  margin-bottom: var(--space-m);
+}
+
+.card__image {
+  transition: transform 0.6s var(--ease-out);
+}
+
+.card__like {
+  position: absolute;
+  top: var(--space-xs);
+  right: var(--space-xs);
+  z-index: 1;
+}
+
+.card__badge {
+  position: absolute;
+  top: var(--space-m);
+  left: var(--space-m);
+  padding: 3px 8px 2px;
+  border-radius: var(--radius-s);
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.card__title {
+  margin-bottom: 6px;
+}
+
+.card__link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+}
+
+.card__text {
+  display: -webkit-box;
+  margin-bottom: 6px;
+  overflow: hidden;
+  font-size: var(--fs-small);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.card__direction {
+  font-size: var(--fs-caption);
+  color: var(--color-muted);
+}
+
+.card__bottom {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+  margin-top: auto;
+  padding-top: var(--space-m);
+}
+
+.card__buy {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-s);
+}
+
+@media (hover: hover) {
+  .card:hover .card__image {
+    transform: scale(1.04);
+  }
+
+  .card:hover .card__link {
+    color: var(--color-wood);
+  }
+}
+
+@media (max-width: 480px) {
+  .card__text {
+    display: none;
+  }
+
+  .card__media {
+    margin-bottom: var(--space-s);
+  }
+
+  .card__badge {
+    top: var(--space-s);
+    left: var(--space-s);
+  }
+
+  .card__bottom {
+    gap: var(--space-s);
+    padding-top: var(--space-s);
+  }
+}
+
+/* Цена */
+
+.price {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0 var(--space-s);
+  font-size: 18px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.price__old {
+  font-size: var(--fs-small);
+  font-weight: 400;
+  color: var(--color-muted);
+  text-decoration: line-through;
+}
+
+.price--size_l {
+  font-size: 32px;
+}
+
+.price--size_l .price__old {
+  font-size: 18px;
+}
+
+/* Выбор объёма */
+
+.volumes {
+  display: inline-flex;
+  gap: var(--space-xs);
+}
+
+.volumes__option {
+  min-width: 56px;
+  min-height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-s);
+  font-size: var(--fs-small);
+  white-space: nowrap;
+  transition: border-color var(--transition), background-color var(--transition), color var(--transition);
+}
+
+.volumes__option--active {
+  border-color: var(--color-ink);
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+@media (hover: hover) {
+  .volumes__option:not(.volumes__option--active):hover {
+    border-color: var(--color-ink);
+  }
+}
+
+/* Сетка каталога и лента с прокруткой вбок */
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-xl) var(--space-l);
+}
+
+@media (max-width: 1240px) {
+  .grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-l) var(--space-m);
+  }
+}
+
+@media (max-width: 340px) {
+  .grid {
+    gap: var(--space-l) var(--space-s);
+  }
+}
+
+.rail {
+  display: flex;
+  gap: var(--space-l);
+  margin-inline: calc(-1 * var(--gutter));
+  padding-inline: var(--gutter);
+  overflow-x: auto;
+  scroll-padding-inline: var(--gutter);
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.rail::-webkit-scrollbar {
+  display: none;
+}
+
+.rail__item {
+  flex: 0 0 calc((100% - 3 * var(--space-l)) / 4);
+  scroll-snap-align: start;
+}
+
+@media (max-width: 1240px) {
+  .rail__item {
+    flex-basis: calc((100% - 2 * var(--space-l)) / 3);
+  }
+}
+
+@media (max-width: 768px) {
+  .rail {
+    gap: var(--space-m);
+  }
+
+  .rail__item {
+    flex-basis: 62%;
+  }
+}
+
+/* Кнопки-фильтры */
+
+.chips {
+  display: flex;
+  gap: var(--space-s);
+  margin-inline: calc(-1 * var(--gutter));
+  padding-inline: var(--gutter);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.chips::-webkit-scrollbar {
+  display: none;
+}
+
+.chips__item {
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 0 var(--space-m);
+  border: 1px solid var(--color-line);
+  border-radius: 22px;
+  font-size: 15px;
+  white-space: nowrap;
+  transition: border-color var(--transition), background-color var(--transition), color var(--transition);
+}
+
+.chips__item--active {
+  border-color: var(--color-ink);
+  background: var(--color-ink);
+  color: var(--color-paper);
+}
+
+@media (hover: hover) {
+  .chips__item:not(.chips__item--active):hover {
+    border-color: var(--color-ink);
+  }
+}

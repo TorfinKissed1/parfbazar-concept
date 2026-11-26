@@ -1,0 +1,191 @@
+/* Подбор аромата */
+
+.quiz__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-m);
+  min-height: 36px;
+  margin-bottom: var(--space-m);
+}
+
+.quiz__title {
+  margin-bottom: var(--space-l);
+}
+
+.quiz__options {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-m);
+}
+
+.quiz__option {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+  min-height: 72px;
+  padding: var(--space-m);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-m);
+  text-align: left;
+  transition: border-color var(--transition), background-color var(--transition);
+}
+
+.quiz__option--image {
+  padding: var(--space-s) var(--space-s) var(--space-m);
+}
+
+.quiz__image {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: var(--radius-s);
+  object-fit: cover;
+}
+
+.quiz__label {
+  font-family: var(--font-display);
+  font-size: 26px;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.quiz__result {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-l);
+}
+
+.quiz__set {
+  margin-top: var(--space-l);
+}
+
+@media (hover: hover) {
+  .quiz__option:hover {
+    border-color: var(--color-ink);
+    background: var(--color-surface);
+  }
+}
+
+@media (max-width: 768px) {
+  .quiz__options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .quiz__result {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-l) var(--space-m);
+  }
+
+  .quiz__label {
+    font-size: 22px;
+  }
+}
+
+/* Покупка в 1 клик */
+
+.quick-buy {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+}
+
+.quick-buy__product {
+  display: flex;
+  align-items: center;
+  gap: var(--space-m);
+  padding-bottom: var(--space-m);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.quick-buy__media {
+  flex-shrink: 0;
+  width: 88px;
+  height: 110px;
+}
+
+.quick-buy__info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  min-width: 0;
+}
+
+/* Экран «заказ принят» */
+
+.order-done {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-m);
+  margin-bottom: var(--space-l);
+}
+
+.order-done__mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-wood);
+  color: var(--color-paper);
+  animation: mark-in 0.6s var(--ease-out);
+}
+
+.order-done__text {
+  font-size: 18px;
+}
+
+@keyframes mark-in {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+}
+
+/* Выбор аромата в сет */
+
+.picker__search {
+  margin-bottom: var(--space-m);
+}
+
+.picker__list {
+  display: flex;
+  flex-direction: column;
+}
+
+.picker-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-m);
+  padding-block: var(--space-s);
+  border-bottom: 1px solid var(--color-line);
+}
+
+.picker-item__media {
+  flex-shrink: 0;
+  width: 56px;
+  height: 70px;
+}
+
+.picker-item__info {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.picker-item__text {
+  overflow: hidden;
+  font-size: var(--fs-caption);
+  color: var(--color-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.picker__empty {
+  padding-block: var(--space-l);
+  color: var(--color-muted);
+}
