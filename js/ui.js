@@ -10,7 +10,7 @@
   }
 
   function icon(name, modifier = '') {
-    return `<svg class="icon ${modifier}" aria-hidden="true"><use href="img/icons.svg#${name}"></use></svg>`;
+    return `<svg class="icon ${modifier}" aria-hidden="true"><use href="#${name}"></use></svg>`;
   }
 
   function plural(count, one, few, many) {
@@ -27,7 +27,7 @@
     return `product.html?a=${encodeURIComponent(product.slug)}`;
   }
 
-  function priceHtml(item, modifier = '') {
+  function priceHtml(item, modifier = 'card__price') {
     const old = item.old > item.price ? ` <span class="price__old">${PB.money(item.old)}</span>` : '';
     return `<span class="price ${modifier}" data-price>${PB.money(item.price)}${old}</span>`;
   }
@@ -46,12 +46,12 @@
       aria-label="В избранное" aria-pressed="${active}">${icon('heart', 'like__icon')}</button>`;
   }
 
-  function cardHtml(product) {
-    const item = store.volume(product, DEFAULT_ML);
+  function cardHtml(product, ml = DEFAULT_ML) {
+    const item = store.volume(product, ml);
     const badge = product.sections.includes('Хиты') ? '<span class="card__badge">Хит</span>' : '';
     const direction = product.direction ? `<p class="card__direction">Направление: ${esc(product.direction)}</p>` : '';
     return `
-      <article class="card" data-card="${esc(product.slug)}" data-selected-ml="${DEFAULT_ML}">
+      <article class="card" data-card="${esc(product.slug)}" data-selected-ml="${ml}">
         <span class="bottle card__media">
           <img class="bottle__image card__image" src="${productImage(product)}" alt="Флакон ${esc(product.title)}" width="720" height="900" loading="lazy">
         </span>
@@ -61,7 +61,7 @@
         <p class="card__text">${esc(product.short)}</p>
         ${direction}
         <div class="card__bottom">
-          <div class="card__buy">${volumesHtml(product, DEFAULT_ML)}${priceHtml(item)}</div>
+          <div class="card__buy">${volumesHtml(product, ml)}${priceHtml(item)}</div>
           <button class="button button--wide" type="button" data-add>В корзину</button>
         </div>
       </article>`;
@@ -69,7 +69,9 @@
 
   /* Окна */
 
+  // Окно открыли, пока оно закрывалось: снятый класс отменяет закрытие в closeDialog.
   function openDialog(dialog) {
+    dialog.classList.remove('dialog--closing');
     if (!dialog.open) dialog.showModal();
   }
 
@@ -77,17 +79,30 @@
     if (!dialog.open || dialog.classList.contains('dialog--closing')) return;
     if (reduceMotion.matches) return dialog.close(); // без анимации animationend не придёт
     dialog.classList.add('dialog--closing');
-    dialog.addEventListener('animationend', () => {
+    const onEnd = (event) => {
+      // animationend всплывает от вложенных элементов и приходит от ::backdrop: ждём только само окно.
+      if (event.target !== dialog || event.pseudoElement) return;
+      dialog.removeEventListener('animationend', onEnd);
+      if (!dialog.classList.contains('dialog--closing')) return;
       dialog.classList.remove('dialog--closing');
       dialog.close();
-    }, { once: true });
+    };
+    dialog.addEventListener('animationend', onEnd);
+  }
+
+  function openedDialog() {
+    return document.querySelector('dialog[open]:not(.dialog--closing)');
   }
 
   function mountDialog(html) {
     document.body.insertAdjacentHTML('beforeend', html);
     const dialog = document.body.lastElementChild;
+    // Выделение текста в поле, отпущенное за краем окна, тоже даёт click по фону: закрываем,
+    // только если и нажатие началось на фоне.
+    let pressedBackdrop = false;
+    dialog.addEventListener('pointerdown', (event) => { pressedBackdrop = event.target === dialog; });
     dialog.addEventListener('click', (event) => {
-      if (event.target === dialog || event.target.closest('[data-close]')) closeDialog(dialog);
+      if ((event.target === dialog && pressedBackdrop) || event.target.closest('[data-close]')) closeDialog(dialog);
     });
     dialog.addEventListener('cancel', (event) => {
       event.preventDefault();
@@ -105,8 +120,22 @@
 
   /* Корзина */
 
+  // Подсказки про сет честны, только когда сет дешевле флаконов по отдельности: тройка уценённых
+  // и так стоит меньше 3 700 ₽. Для неполной тройки считаем, что докупят самые дорогие флаконы по 10 мл.
+  function setPays(totals) {
+    if (!totals.setNeed) return totals.discount > 0;
+    const prices = store.lines()
+      .filter((line) => line.ml === PB.SET_VOLUME)
+      .flatMap((line) => Array(line.qty).fill(line.price))
+      .sort((a, b) => a - b)
+      .slice(0, PB.SET_SIZE - totals.setNeed);
+    const topPrice = Math.max(...store.products.map((product) => store.volume(product, PB.SET_VOLUME)?.price || 0));
+    const sum = prices.reduce((total, price) => total + price, 0) + totals.setNeed * topPrice;
+    return sum > PB.SET_PRICE;
+  }
+
   function setProgressHtml(totals) {
-    if (!totals.smallCount) return '';
+    if (!totals.smallCount || !setPays(totals)) return '';
     const filled = totals.setNeed ? PB.SET_SIZE - totals.setNeed : PB.SET_SIZE;
     const dots = Array.from({ length: PB.SET_SIZE }, (_, index) =>
       `<span class="set-progress__dot${index < filled ? ' set-progress__dot--filled' : ''}"></span>`).join('');
@@ -206,21 +235,30 @@
 
   let toastTimer;
 
+  function hideToast(node) {
+    if (node.classList.contains('toast--closing')) return;
+    if (reduceMotion.matches) return node.remove();
+    node.classList.add('toast--closing');
+    node.addEventListener('animationend', () => node.remove(), { once: true });
+  }
+
+  // Открытое окно лежит в верхнем слое: сообщение и летящее фото кладём внутрь него, иначе их не видно.
+  function topLayer() {
+    return openedDialog() || document.body;
+  }
+
   function toast(text, action) {
-    document.querySelector('.toast')?.remove();
+    document.querySelectorAll('.toast').forEach(hideToast);
     clearTimeout(toastTimer);
     const button = action ? `<button class="button button--light button--size_s toast__action" type="button">${action.label}</button>` : '';
-    document.body.insertAdjacentHTML('beforeend', `<div class="toast" role="status"><span>${text}</span>${button}</div>`);
-    const node = document.body.lastElementChild;
-    const hide = () => {
-      node.classList.add('toast--closing');
-      node.addEventListener('animationend', () => node.remove(), { once: true });
-    };
+    const layer = topLayer();
+    layer.insertAdjacentHTML('beforeend', `<div class="toast" role="status"><span>${text}</span>${button}</div>`);
+    const node = layer.lastElementChild;
     node.querySelector('.toast__action')?.addEventListener('click', () => {
-      node.remove();
+      hideToast(node);
       action.run();
     });
-    toastTimer = setTimeout(hide, 4500);
+    toastTimer = setTimeout(() => hideToast(node), 4500);
   }
 
   function flyToCart(image) {
@@ -232,7 +270,7 @@
     flyer.className = 'flyer';
     flyer.removeAttribute('style');
     Object.assign(flyer.style, { left: `${from.left}px`, top: `${from.top}px`, width: `${from.width}px`, height: `${from.height}px` });
-    document.body.append(flyer);
+    topLayer().append(flyer);
     requestAnimationFrame(() => {
       const dx = to.left + to.width / 2 - (from.left + from.width / 2);
       const dy = to.top + to.height / 2 - (from.top + from.height / 2);
@@ -240,25 +278,33 @@
       flyer.style.opacity = '0.2';
     });
     flyer.addEventListener('transitionend', () => flyer.remove(), { once: true });
+    setTimeout(() => flyer.remove(), 1000); // transitionend не приходит, если вкладку свернули
   }
+
+  const doneTimers = new WeakMap();
 
   function addToCart(product, ml, image, button) {
     store.add(product.slug, ml);
     flyToCart(image);
     if (button) {
-      const label = button.textContent;
+      // Исходную подпись запоминаем один раз: второй быстрый клик иначе запомнил бы «Добавлено».
+      button.dataset.label ??= button.textContent;
+      clearTimeout(doneTimers.get(button));
       button.textContent = 'Добавлено';
       button.classList.add('button--done');
-      setTimeout(() => {
-        button.textContent = label;
+      doneTimers.set(button, setTimeout(() => {
+        button.textContent = button.dataset.label;
         button.classList.remove('button--done');
-      }, 1400);
+      }, 1400));
     }
-    if (ml !== PB.SET_VOLUME) return;
+    // Сообщение показывается после каждого добавления: одной смены подписи кнопки покупатель не замечает.
     const totals = store.totals();
-    const text = totals.setNeed
-      ? `Ещё ${totals.setNeed} по ${PB.SET_VOLUME}&nbsp;мл, и три выйдут за ${PB.money(PB.SET_PRICE)}`
-      : `Сет собран: три по ${PB.SET_VOLUME}&nbsp;мл за ${PB.money(PB.SET_PRICE)}`;
+    let text = `${esc(product.title)}, ${ml}&nbsp;мл в корзине`;
+    if (ml === PB.SET_VOLUME && setPays(totals)) {
+      text = totals.setNeed
+        ? `Ещё ${totals.setNeed} по ${PB.SET_VOLUME}&nbsp;мл, и три выйдут за ${PB.money(PB.SET_PRICE)}`
+        : `Сет собран: три по ${PB.SET_VOLUME}&nbsp;мл за ${PB.money(PB.SET_PRICE)}`;
+    }
     toast(text, { label: 'Корзина', run: () => openDialog(document.getElementById('cart')) });
   }
 
@@ -286,7 +332,11 @@
       return;
     }
     // Фото из карточки перелетает на страницу товара: имя перехода получает только нажатая карточка.
-    if (event.target.closest('.card__link')) card.querySelector('.card__image').style.viewTransitionName = 'product-image';
+    if (event.target.closest('.card__link')) {
+      document.querySelectorAll('.gallery__image--bottle').forEach((image) => { image.style.viewTransitionName = 'none'; });
+      document.querySelectorAll('.card__image').forEach((image) => { image.style.viewTransitionName = ''; });
+      card.querySelector('.card__image').style.viewTransitionName = 'product-image';
+    }
   }
 
   function handleLikeClick(event) {
@@ -317,6 +367,31 @@
     });
   }
 
+  /* Окно каталога и нижняя навигация */
+
+  // Адреса разделов читает каталог (js/catalog.js), схему менять вместе с ним.
+  const CATALOG_SECTIONS = [
+    ['Все ароматы', 'catalog.html'],
+    ['Хиты', 'catalog.html?filter=hits'],
+    ['Зимняя коллекция', 'catalog.html?filter=winter'],
+    ['Сладкие', 'catalog.html?moods=sweet'],
+    ['Свежие', 'catalog.html?moods=fresh'],
+    ['Тёплые и пряные', 'catalog.html?moods=warm'],
+    ['Цветочные', 'catalog.html?moods=floral'],
+    ['Мужские', 'catalog.html?filter=men'],
+  ];
+
+  // Шапка и навигация одинаковы на всех страницах (их копирует сборка), текущий пункт отмечаем здесь.
+  function markTab() {
+    const page = location.pathname.split('/').pop() || 'index.html';
+    const fav = new URLSearchParams(location.search).get('filter') === 'fav';
+    const tabs = { 'index.html': 'home', 'catalog.html': fav ? 'fav' : 'catalog', 'product.html': 'catalog', 'checkout.html': 'cart' };
+    const item = document.querySelector(`.tabbar [data-tab="${tabs[page]}"]`);
+    if (!item) return;
+    item.classList.add('tabbar__item--active');
+    if (item.tagName === 'A') item.setAttribute('aria-current', 'page');
+  }
+
   function init() {
     const cart = mountDialog(`
       <dialog class="dialog dialog--side cart" id="cart" aria-labelledby="cart-title">
@@ -324,24 +399,27 @@
         <div class="dialog__body" data-cart-body></div>
         <div class="dialog__foot" data-cart-foot></div>
       </dialog>`);
+    const sections = CATALOG_SECTIONS
+      .map(([label, href]) => `<a class="menu__link" href="${href}">${label}</a>`)
+      .join('');
     mountDialog(`
-      <dialog class="dialog dialog--side dialog--left" id="menu" aria-labelledby="menu-title">
-        ${dialogHead('Меню', 'menu-title')}
+      <dialog class="dialog dialog--left" id="menu" aria-labelledby="menu-title">
+        ${dialogHead('Каталог', 'menu-title')}
         <div class="dialog__body">
-          <nav class="menu">
-            <a class="menu__link" href="catalog.html">Каталог</a>
-            <a class="menu__link" href="index.html#set" data-close>Собрать сет</a>
-            <button class="menu__link" type="button" data-open="quiz">Подбор аромата</button>
-            <a class="menu__link" href="index.html#stores" data-close>Магазины</a>
-            <a class="menu__link" href="catalog.html?fav=1">Избранное</a>
-          </nav>
+          <nav class="menu" aria-label="Разделы каталога">${sections}</nav>
+          <div class="menu__extra">
+            <a class="menu__sub" href="index.html#set" data-close>Собрать сет</a>
+            <button class="menu__sub" type="button" data-open="quiz">Подбор аромата</button>
+            <a class="menu__sub" href="index.html#stores" data-close>Магазины</a>
+          </div>
           <div class="menu__contacts">
-            <a href="tel:+79150801691">+7 915 080-16-91</a>
-            <a href="https://t.me/parfbazar" target="_blank" rel="noopener">Telegram</a>
-            <a href="https://vk.com/parf_bazar" target="_blank" rel="noopener">ВКонтакте</a>
+            <a class="menu__contact" href="tel:+79150801691">+7 915 080-16-91</a>
+            <a class="menu__contact" href="https://t.me/parfbazar" target="_blank" rel="noopener">Telegram</a>
+            <a class="menu__contact" href="https://vk.com/parf_bazar" target="_blank" rel="noopener">ВКонтакте</a>
           </div>
         </div>
       </dialog>`);
+    markTab();
 
     renderCart(cart);
     cart.addEventListener('click', handleCartClick);
@@ -358,6 +436,12 @@
         if (opener.closest('dialog')) closeDialog(opener.closest('dialog'));
         const target = document.getElementById(opener.dataset.open);
         if (target) openDialog(target);
+        return;
+      }
+      const arrow = event.target.closest('[data-scroll]');
+      if (arrow) {
+        const rail = document.querySelector(arrow.dataset.scrollTarget);
+        rail.scrollBy({ left: Number(arrow.dataset.scroll) * rail.clientWidth * 0.9, behavior: 'smooth' });
         return;
       }
       handleLikeClick(event);
