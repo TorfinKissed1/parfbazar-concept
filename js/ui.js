@@ -49,7 +49,6 @@
   function cardHtml(product, ml = DEFAULT_ML) {
     const item = store.volume(product, ml);
     const badge = product.sections.includes('Хиты') ? '<span class="card__badge">Хит</span>' : '';
-    const direction = product.direction ? `<p class="card__direction">Направление: ${esc(product.direction)}</p>` : '';
     return `
       <article class="card" data-card="${esc(product.slug)}" data-selected-ml="${ml}">
         <span class="bottle card__media">
@@ -59,7 +58,6 @@
         ${likeHtml(product, 'card__like')}
         <h3 class="title title--size_h3 card__title"><a class="card__link" href="${productUrl(product)}">${esc(product.title)}</a></h3>
         <p class="card__text">${esc(product.short)}</p>
-        ${direction}
         <div class="card__bottom">
           <div class="card__buy">${volumesHtml(product, ml)}${priceHtml(item)}</div>
           <button class="button button--wide" type="button" data-add>В корзину</button>

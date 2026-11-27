@@ -24,7 +24,7 @@
   function resultsHtml(query, list) {
     if (!list.length) return '<p class="site-search__empty">Ничего не нашлось</p>';
     const items = list.map((product) => {
-      const meta = product.direction ? `Направление: ${esc(product.direction)}` : esc(product.short);
+      const meta = esc(product.short);
       return `<a class="site-search__item" href="${productUrl(product)}">
           <img class="site-search__thumb" src="${esc(productImage(product))}" alt="" width="44" height="56" loading="lazy">
           <span class="site-search__info">

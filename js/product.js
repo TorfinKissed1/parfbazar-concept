@@ -44,15 +44,13 @@
     const rows = [
       ['Характер', moods.join(', ')],
       ...Object.entries(product.traits).filter(([name]) => name !== 'Аромат'),
-      ['Доставка', 'СДЭК до пункта выдачи, 290 ₽'],
-      ['Самовывоз', 'Санкт-Петербург и Великий Новгород'],
     ];
     return rows.filter(([, value]) => value).map(([name, value]) =>
       `<div class="specs__row"><span class="specs__name">${esc(name)}</span><span class="specs__value">${esc(value)}</span></div>`).join('');
   }
 
   function pageHtml(product) {
-    const direction = product.direction ? `<p>Направление: <strong>${esc(product.direction)}</strong></p>` : '';
+    const direction = product.direction ? `<p>По мотивам: <strong>${esc(product.direction)}</strong></p>` : '';
     const story = product.story.map((text) => `<p>${esc(text)}</p>`).join('');
     return `
       <div class="product">

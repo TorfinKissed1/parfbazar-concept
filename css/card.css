@@ -76,11 +76,6 @@
   -webkit-line-clamp: 2;
 }
 
-.card__direction {
-  font-size: var(--fs-caption);
-  color: var(--color-muted);
-}
-
 .card__bottom {
   position: relative;
   z-index: 1;
