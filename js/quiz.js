@@ -1,6 +1,6 @@
 /* Подбор аромата: три вопроса и три аромата в ответ. */
 (function (PB) {
-  const { cardHtml, mountDialog, dialogHead, openDialog, closeDialog } = PB.ui;
+  const { icon, cardHtml, mountDialog, dialogHead, openDialog, closeDialog } = PB.ui;
   const RESULT_SIZE = 3;
 
   const OCCASIONS = [
@@ -32,10 +32,21 @@
       .map((entry) => entry.product);
   }
 
-  function optionHtml(option) {
-    const image = option.image ? `<img class="quiz__image" src="${option.image}" alt="" width="500" height="500">` : '';
-    return `<button class="quiz__option${option.image ? ' quiz__option--image' : ''}" type="button" data-answer="${option.id}">
-      ${image}<span class="quiz__label">${option.label}</span></button>`;
+  // Варианты с картинкой идут плитками, без картинки строками со стрелкой: пустая плитка с подписью в углу
+  // выглядела как незагрузившееся фото.
+  function optionsHtml(options) {
+    const tiles = options.filter((option) => option.image);
+    const rows = options.filter((option) => !option.image);
+    const grid = tiles.length ? `<div class="quiz__options quiz__options--count_${tiles.length}">${tiles.map((option) => `
+      <button class="quiz__option" type="button" data-answer="${option.id}">
+        <img class="quiz__image" src="${option.image}" alt="" width="500" height="500">
+        <span class="quiz__label">${option.label}</span>
+      </button>`).join('')}</div>` : '';
+    const list = rows.length ? `<div class="quiz__rows">${rows.map((option) => `
+      <button class="quiz__row" type="button" data-answer="${option.id}">
+        <span class="quiz__label">${option.label}</span>${icon('arrow-right')}
+      </button>`).join('')}</div>` : '';
+    return grid + list;
   }
 
   function render() {
@@ -46,7 +57,7 @@
       body.innerHTML = `
         <div class="quiz__top"><span class="muted">${answers.length + 1} из ${STEPS.length}</span>${back}</div>
         <h3 class="title title--size_h2 quiz__title">${step.title}</h3>
-        <div class="quiz__options">${step.options(answers).map(optionHtml).join('')}</div>`;
+        ${optionsHtml(step.options(answers))}`;
       return;
     }
     const result = pick(answers);

@@ -19,20 +19,42 @@
   gap: var(--space-m);
 }
 
+.quiz__options--count_3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
 .quiz__option {
   display: flex;
   flex-direction: column;
   gap: var(--space-s);
-  min-height: 72px;
-  padding: var(--space-m);
+  padding: var(--space-s) var(--space-s) var(--space-m);
   border: 1px solid var(--color-line);
   border-radius: var(--radius-m);
   text-align: left;
   transition: border-color var(--transition), background-color var(--transition);
 }
 
-.quiz__option--image {
-  padding: var(--space-s) var(--space-s) var(--space-m);
+.quiz__rows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+}
+
+.quiz__options + .quiz__rows {
+  margin-top: var(--space-m);
+}
+
+.quiz__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-m);
+  min-height: 64px;
+  padding: 0 var(--space-l);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-m);
+  text-align: left;
+  transition: border-color var(--transition), background-color var(--transition), color var(--transition);
 }
 
 .quiz__image {
@@ -61,7 +83,8 @@
 }
 
 @media (hover: hover) {
-  .quiz__option:hover {
+  .quiz__option:hover,
+  .quiz__row:hover {
     border-color: var(--color-ink);
     background: var(--color-surface);
   }
@@ -70,6 +93,21 @@
 @media (max-width: 768px) {
   .quiz__options {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* Три плитки в ряд: при двух колонках третья повисала одна. */
+  .quiz__options--count_3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-s);
+  }
+
+  .quiz__options--count_3 .quiz__label {
+    font-size: 17px;
+  }
+
+  .quiz__row {
+    min-height: 56px;
+    padding: 0 var(--space-m);
   }
 
   .quiz__result {

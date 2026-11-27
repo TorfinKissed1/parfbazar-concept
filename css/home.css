@@ -436,7 +436,22 @@
 .notes-line__track {
   display: flex;
   width: max-content;
-  animation: ticker-run 70s linear infinite;
+}
+
+/* Едут две одинаковые половинки, каждая своим слоем на свою ширину. Один слой на всю ленту выходил
+   шириной 7-8 тысяч пикселей: браузер дорисовывал его кусками, и на ходу часть ленты пропадала. */
+.notes-line__group {
+  display: flex;
+  flex-shrink: 0;
+  backface-visibility: hidden;
+  will-change: transform;
+  animation: notes-run 70s linear infinite;
+}
+
+@keyframes notes-run {
+  to {
+    transform: translate3d(-100%, 0, 0);
+  }
 }
 
 .notes-line__word {
